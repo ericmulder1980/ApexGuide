@@ -1,14 +1,756 @@
 {
-  "project": "[PROJECT-NAME]",
+  "project": "ApexGuide",
   "version": "0.1.0",
-  "last_updated": null,
+  "last_updated": "2026-10-02",
   "metadata": {
-    "created": null,
+    "created": "2026-10-02",
     "initialized_by": "user",
-    "tech_stack": [],
-    "repository": null
+    "description": "Whitelabel Flutter app (Android + iOS) giving licensed kart drivers offline, corner-by-corner track guidance. Content, licenses and theming come from a multi-tenant Drupal central application (separate repo) over a REST API.",
+    "spec": "docs/specs/Track Guide – Project & Implementation Plan.md",
+    "design_reference": "reference/prototype/track-guide-ui-designs/project/ApexGuide Screens.dc.html",
+    "erd": "docs/database/mobile-erd.md",
+    "tech_stack": [
+      "Flutter 3",
+      "Riverpod",
+      "go_router",
+      "drift + SQLCipher",
+      "dio",
+      "youtube_player_flutter",
+      "flutter_secure_storage",
+      "Platform channels: Android FLAG_SECURE, iOS secure text layer"
+    ],
+    "repository": "Flutter app only; Drupal central application lives in a separate repository (EXT-* features are tracked here as dependencies, not built here)",
+    "current_feature": null,
+    "id_prefixes": {
+      "FND": "Foundation",
+      "SYN": "Sync",
+      "LIC": "License",
+      "PRT": "Protection",
+      "CNT": "Content",
+      "THM": "Theming",
+      "SET": "Settings",
+      "VID": "Video",
+      "FBK": "Feedback",
+      "UX": "UX",
+      "DST": "Distribution",
+      "OPS": "Operations",
+      "EXT": "External (Drupal, separate repo)"
+    }
   },
-  "features": [],
+  "features": [
+    {
+      "id": "FND-001",
+      "title": "Flutter project scaffold",
+      "description": "Create the Flutter project with go_router navigation, Riverpod, folder structure, lints and test setup. Portrait only, one app name and icon for all tenants.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-01"],
+      "dependencies": [],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "App builds and runs on Android and iOS",
+        "Portrait orientation locked",
+        "go_router routes exist for activation, first sync, track list, track, corner, settings and locked screens (placeholders)",
+        "Lints and `flutter test` run clean"
+      ]
+    },
+    {
+      "id": "FND-002",
+      "title": "Theme engine with light/dark and tenant color hook",
+      "description": "Light and dark themes following the system setting with a manual override, plus a hook to inject tenant primary/secondary colors per mode.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-03", "R-04"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Theme follows system setting by default",
+        "Manual override (system, light, dark) persists across restarts",
+        "Theme accepts separate light and dark primary/secondary colors at runtime",
+        "Visual style matches the Claude Design prototype"
+      ]
+    },
+    {
+      "id": "FND-003",
+      "title": "English/Dutch localization scaffold",
+      "description": "Localization setup for en and nl; follows device language with an override hook for Settings.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-02"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "All UI strings come from en and nl resource files",
+        "App follows device language for en/nl, falls back to en otherwise",
+        "Language can be overridden at runtime and persists"
+      ]
+    },
+    {
+      "id": "FND-004",
+      "title": "Encrypted local database",
+      "description": "drift over SQLCipher implementing the schema in docs/database/mobile-erd.md. Database key generated per install, stored in Android Keystore / iOS Keychain (whenUnlockedThisDeviceOnly).",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-28"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "All tables from the ERD exist with keys and ON DELETE CASCADE to TRACK",
+        "Database file is unreadable without the key",
+        "Key is generated on first launch and stored in Keystore/Keychain",
+        "Schema covered by tests against an in-memory database"
+      ]
+    },
+    {
+      "id": "FND-005",
+      "title": "API client and mock API",
+      "description": "dio client for the /api/v1/ contract: bearer token interceptor, error mapping ({error, message}, 401, 403 revoked, 409, 426), server_time header capture, and a mock API implementing the frozen contract so app work is not blocked by Drupal.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-20"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Typed models for all endpoint payloads in the spec",
+        "403 on any endpoint surfaces as a single 'revoked' event",
+        "426 surfaces as an 'update required' event",
+        "server_time from every response is stored",
+        "Mock API serves a demo tenant with one indoor and one outdoor track"
+      ]
+    },
+    {
+      "id": "FND-006",
+      "title": "Repository layer",
+      "description": "Repositories over the database exposing tracks, corners, content, videos, favorites, theme and sync state to the UI via Riverpod.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-18"],
+      "dependencies": ["FND-004"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "UI never accesses drift directly",
+        "Content queries filter by condition and language",
+        "Repositories are unit tested"
+      ]
+    },
+    {
+      "id": "SYN-001",
+      "title": "Delta sync engine",
+      "description": "On every start when online: tracks index, compare versions, fetch tracks/{id} for new or changed tracks, write each track in one transaction, delete tracks marked deleted or missing from the index. Runs the license-refresh and app/config steps first, theme refresh and feedback flush last.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-19", "R-20"],
+      "dependencies": ["FND-005", "FND-006"],
+      "external_dependencies": ["EXT-004"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "New, changed and deleted tracks handled correctly",
+        "Interrupted sync leaves the previous track version intact",
+        "403 during sync aborts and triggers the wipe",
+        "Unit tests against an in-memory database and fake API"
+      ]
+    },
+    {
+      "id": "SYN-002",
+      "title": "Layout image download and encrypted storage",
+      "description": "Download layout images and logo via media/{id} only when the checksum changed; store encrypted in the app sandbox; decrypt into memory on view.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-18", "R-28"],
+      "dependencies": ["SYN-001"],
+      "external_dependencies": ["EXT-004"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Unchanged checksum skips the download",
+        "Images on disk are not viewable without the key",
+        "Failed image download leaves the old track version intact"
+      ]
+    },
+    {
+      "id": "SYN-003",
+      "title": "First-sync progress screen",
+      "description": "Branded progress screen after activation showing track count, with retry on failure. Later syncs run silently behind the track list.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-18"],
+      "dependencies": ["SYN-001", "THM-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Shows progress as tracks complete",
+        "Retry on failure without re-activation",
+        "Navigates to the track list when done"
+      ]
+    },
+    {
+      "id": "LIC-001",
+      "title": "Installation id that survives wipes",
+      "description": "Generate the installation id on first launch: app-scoped ANDROID_ID on Android, a UUID stored in the Keychain on iOS. It is the only item kept by a wipe.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-21"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Same id returned across app restarts",
+        "Id survives the wipe routine",
+        "Id survives reinstall on Android; iOS Keychain persistence verified on a real device"
+      ]
+    },
+    {
+      "id": "LIC-002",
+      "title": "Activation screen and activate call",
+      "description": "Key entry screen (neutral publisher logo, language switch, privacy note) calling activate with key, installation id, platform and app version. Stores token, server time, tenant and theme, then starts the first sync.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-21", "R-22"],
+      "dependencies": ["LIC-001", "FND-005", "FND-003"],
+      "external_dependencies": ["EXT-002"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Key format: 4 groups of 4 characters, no ambiguous letters",
+        "Error states for unknown key (404), revoked (403), bound elsewhere (409) and offline",
+        "Token stored in secure storage, never in the database",
+        "Successful activation leads to first sync"
+      ]
+    },
+    {
+      "id": "LIC-003",
+      "title": "License state machine",
+      "description": "Daily refresh when online and last check is older than 24 hours (on start and on return to foreground); 7-day token max age; network failures ignored until exp; wipe when exp has passed or the device clock is earlier than the last server time.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-23", "R-24"],
+      "dependencies": ["LIC-002", "PRT-003"],
+      "external_dependencies": ["EXT-002"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Unit tests with a fake clock and fake API cover: bind, re-enter on same installation, refuse on another, refresh, expiry wipe, revocation, clock moved back, offline paths",
+        "Expired token wipes content but keeps the installation id",
+        "Re-entering the same key on the same installation restores access"
+      ]
+    },
+    {
+      "id": "LIC-004",
+      "title": "Revocation handling and Locked screen",
+      "description": "A 403 from any endpoint wipes local data and shows the key entry screen with the reason. Locked screen explains that the license expired and data was cleared.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-25"],
+      "dependencies": ["LIC-003", "PRT-003"],
+      "external_dependencies": ["EXT-002", "EXT-003"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "403 from any endpoint triggers the wipe",
+        "Locked screen shows the reason (expired vs revoked)",
+        "Revoked key is refused on re-entry"
+      ]
+    },
+    {
+      "id": "PRT-001",
+      "title": "Android FLAG_SECURE and disabled text selection",
+      "description": "Platform channel setting FLAG_SECURE on the main activity at start-up; SelectionContainer.disabled around content; no share or copy actions.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-26", "R-28"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Screenshots and screen recording show a blank/blocked screen on Android 12+",
+        "Corner text cannot be selected or copied"
+      ]
+    },
+    {
+      "id": "PRT-002",
+      "title": "iOS secure text-field layer",
+      "description": "Corner text rendered in a native UITextField with isSecureTextEntry as layer host, embedded via a platform view, isolated so it can be replaced by the blur fallback if iOS breaks it.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-27"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Screenshots and recordings show the corner text area blank on iOS 16+",
+        "Text not selectable",
+        "Implementation isolated in one platform view"
+      ]
+    },
+    {
+      "id": "PRT-003",
+      "title": "Wipe routine",
+      "description": "Delete database, image folder, Keystore/Keychain DB key, token and shared preferences; keep only the installation id; restart to key entry.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-25"],
+      "dependencies": ["FND-004", "LIC-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "After wipe only the installation id remains",
+        "App restarts on the key entry screen",
+        "Wipe covered by tests"
+      ]
+    },
+    {
+      "id": "CNT-001",
+      "title": "Track list",
+      "description": "Search by name, country filter chips, favorites first, indoor/outdoor badge, tenant logo in header.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-06", "R-07", "R-08"],
+      "dependencies": ["FND-006", "FND-002"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Search filters by name",
+        "Country chips filter the list",
+        "Favorites toggle locally and sort first",
+        "Indoor/outdoor badge shown"
+      ]
+    },
+    {
+      "id": "CNT-002",
+      "title": "Zoomable layout viewer with corner hotspots",
+      "description": "Layout image with pinch-to-zoom; corner numbers drawn at (x * width, y * height) with a minimum on-screen tap target of 44 px regardless of zoom. Built responsive for future landscape/tablet.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-09", "R-10"],
+      "dependencies": ["SYN-002", "FND-002"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Hotspots align with image coordinates at every zoom level",
+        "Tap target never below 44 px on screen",
+        "Tapping a hotspot opens the corner detail"
+      ]
+    },
+    {
+      "id": "CNT-003",
+      "title": "Numbered corner list",
+      "description": "Numbered corner list on the track screen, selection kept in sync with the layout viewer; videos row and feedback button placement.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-12"],
+      "dependencies": ["CNT-002"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Corners listed in sequential order",
+        "Selecting in the list highlights the hotspot and vice versa"
+      ]
+    },
+    {
+      "id": "CNT-004",
+      "title": "Dry/wet toggle",
+      "description": "Toggle swapping layout image and content set; hidden for indoor tracks; selected corner stays selected.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-11", "R-14", "R-15"],
+      "dependencies": ["CNT-002"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Toggle hidden for indoor tracks",
+        "Toggle swaps image and content",
+        "Selected corner is preserved across toggle"
+      ]
+    },
+    {
+      "id": "CNT-005",
+      "title": "Corner detail screen",
+      "description": "Condition badge, four sections in order (Approach, Braking zone, Apex / Turning point, Overtaking / Defending), previous/next corner, protected text rendering.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-13"],
+      "dependencies": ["CNT-003", "PRT-001", "PRT-002"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Four sections shown in spec order",
+        "Previous/next navigation across corners",
+        "Text rendered through the protection layer on both platforms",
+        "Light-markdown content renders correctly"
+      ]
+    },
+    {
+      "id": "THM-001",
+      "title": "Tenant theme fetch, cache and apply",
+      "description": "Theme from the activate response and tenant/theme (ETag/304), logo via media/{id}, cached and applied app-wide; primary drives app bar, toggle and hotspots, secondary drives accents and active corner.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-04"],
+      "dependencies": ["FND-002", "FND-005", "FND-006"],
+      "external_dependencies": ["EXT-009"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Theme applied immediately after activation",
+        "Refreshed on sync only when updated_at changed",
+        "Separate light and dark color sets applied per mode"
+      ]
+    },
+    {
+      "id": "THM-002",
+      "title": "Neutral native splash and branded start screen",
+      "description": "Native splash stays neutral; Flutter start screen shows tenant branding once the theme is cached. Activation screen always uses the neutral publisher logo.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-05"],
+      "dependencies": ["THM-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Native splash identical for all tenants",
+        "Branded start screen shown only when a theme is cached",
+        "Activation screen never shows a tenant logo"
+      ]
+    },
+    {
+      "id": "SET-001",
+      "title": "Settings screen",
+      "description": "Theme (system, light, dark), language (en, nl), track-day mode switch (wired in UX-001), license status and next check, app version, wipe and re-activate. Not in the spec backlog; derived from the App design section (see ISS-001).",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-02", "R-03"],
+      "dependencies": ["FND-002", "FND-003", "LIC-003"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Theme and language overrides take effect immediately",
+        "License status and next check shown",
+        "Wipe and re-activate asks for confirmation"
+      ]
+    },
+    {
+      "id": "DST-001",
+      "title": "Pilot builds: signed APK and TestFlight",
+      "description": "Signed Android APK shared by link; iOS built and uploaded to TestFlight via a GitHub Actions macOS runner (the 2016 MacBook Pro cannot run Xcode 26).",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-01"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Signed APK installable from a link",
+        "macOS runner workflow builds and uploads to TestFlight internal group",
+        "Signing secrets stored as GitHub secrets, never in the repo",
+        "Apple Developer and Google Play accounts opened"
+      ]
+    },
+    {
+      "id": "VID-001",
+      "title": "YouTube clips at corner markers",
+      "description": "Corner detail offers clip buttons per video marker for the current condition (or 'both'); opens the YouTube player at start and stops at end. Streamed only, never cached.",
+      "release_phase": 1,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-16", "R-17"],
+      "dependencies": ["CNT-005"],
+      "external_dependencies": ["EXT-007"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Only markers for the current condition or 'both' are shown",
+        "Player starts at start_seconds and stops at end_seconds",
+        "Clear offline message when no connection"
+      ]
+    },
+    {
+      "id": "FBK-001",
+      "title": "Feedback sheet with offline queue",
+      "description": "Thumbs up/down plus optional text per track and condition (preselected from toggle); sent anonymously, or queued in FEEDBACK_QUEUE and retried on next start.",
+      "release_phase": 1,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-29"],
+      "dependencies": ["CNT-004", "SYN-001"],
+      "external_dependencies": ["EXT-008"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Condition preselected from the toggle",
+        "Offline feedback queued and sent on next online start",
+        "No device or person identifier in the payload"
+      ]
+    },
+    {
+      "id": "LIC-005",
+      "title": "Bound-elsewhere (409) message and binding reset flow",
+      "description": "Clear 409 message telling the driver to contact the coach for a binding reset; same key works after reset.",
+      "release_phase": 2,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-21"],
+      "dependencies": ["LIC-002"],
+      "external_dependencies": ["EXT-003"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "409 shows a contact-your-coach message in en and nl",
+        "After a coach reset the same key activates on the new installation"
+      ]
+    },
+    {
+      "id": "UX-001",
+      "title": "Track-day mode",
+      "description": "Settings switch: base font one step larger, high contrast, screen awake on Track and Corner screens, enlarged previous/next controls for gloves.",
+      "release_phase": 2,
+      "moscow": "Could",
+      "priority": "low",
+      "requirements": ["R-30"],
+      "dependencies": ["SET-001", "CNT-005"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Screen stays awake only on Track and Corner screens",
+        "Larger type and high contrast applied",
+        "Previous/next controls enlarged"
+      ]
+    },
+    {
+      "id": "UX-002",
+      "title": "Updated badge",
+      "description": "Badge on tracks changed since the driver's last visit, based on track version.",
+      "release_phase": 2,
+      "moscow": "Could",
+      "priority": "low",
+      "requirements": ["R-19"],
+      "dependencies": ["CNT-001", "SYN-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Badge shown after a sync changes a track",
+        "Badge cleared when the track is opened"
+      ]
+    },
+    {
+      "id": "UX-003",
+      "title": "Minimum-version check and update screen",
+      "description": "app/config check during sync and 426 handling; blocking update screen with the server message.",
+      "release_phase": 2,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-19"],
+      "dependencies": ["SYN-001"],
+      "external_dependencies": ["EXT-010"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "App below min_version shows the update screen",
+        "426 from any endpoint shows the same screen"
+      ]
+    },
+    {
+      "id": "DST-002",
+      "title": "Store listings and unlisted Apple distribution",
+      "description": "Play closed testing then public listing; TestFlight external then unlisted App Store distribution; reviewer demo key and note, privacy policy URL, age rating for minors, screenshots in both modes.",
+      "release_phase": 2,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-01"],
+      "dependencies": ["DST-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "App available on Play and as unlisted App Store app",
+        "Reviewer demo key works against the demo tenant",
+        "Privacy policy reviewed before submission"
+      ]
+    },
+    {
+      "id": "OPS-001",
+      "title": "CI/CD pipeline with automated store uploads",
+      "description": "GitHub Actions: tests on every commit, APK on Linux, IPA on macOS runner, uploads to Play internal and TestFlight. Extends the minimal iOS workflow from DST-001.",
+      "release_phase": 3,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-01"],
+      "dependencies": ["DST-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Tests run on every push",
+        "Tagged builds upload automatically to both stores"
+      ]
+    },
+    {
+      "id": "OPS-002",
+      "title": "Sentry crash reporting and maintenance calendar",
+      "description": "Sentry for Flutter with no personal data in reports; maintenance rhythm from the spec documented.",
+      "release_phase": 3,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-01"],
+      "dependencies": ["FND-001"],
+      "external_dependencies": [],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Crashes reported with no personal data",
+        "Alerts on new crash types",
+        "Maintenance calendar documented"
+      ]
+    },
+    {
+      "id": "EXT-001",
+      "title": "[Drupal] Install, Group tenancy, content types, trackguide module skeleton",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-31"],
+      "dependencies": [],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Demo tenant exists with one indoor and one outdoor track"]
+    },
+    {
+      "id": "EXT-002",
+      "title": "[Drupal] activate and license/refresh endpoints",
+      "description": "External dependency built in the Drupal repository. JWT (7 days) with tenant_id and key_binding_id.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-21", "R-22", "R-23", "R-25"],
+      "dependencies": ["EXT-001"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Endpoints match the spec's API contract"]
+    },
+    {
+      "id": "EXT-003",
+      "title": "[Drupal] Coach license pages: issue, list, reset, revoke",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-21", "R-22", "R-32"],
+      "dependencies": ["EXT-002"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Coach can issue, reset and revoke keys within their own group only"]
+    },
+    {
+      "id": "EXT-004",
+      "title": "[Drupal] tracks, tracks/{id} and media endpoints",
+      "description": "External dependency built in the Drupal repository. Version = node revision id.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "critical",
+      "requirements": ["R-19", "R-20"],
+      "dependencies": ["EXT-001"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Payload matches the spec's track shape; cross-tenant requests return 403"]
+    },
+    {
+      "id": "EXT-005",
+      "title": "[Drupal] Coach track editor with coordinate picker",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-09", "R-32"],
+      "dependencies": ["EXT-001"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Coach places corners by clicking the image"]
+    },
+    {
+      "id": "EXT-006",
+      "title": "[Drupal] Translation workflow and publish validation",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-02", "R-15"],
+      "dependencies": ["EXT-005"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Publishing blocked without both languages or without wet content on outdoor tracks"]
+    },
+    {
+      "id": "EXT-007",
+      "title": "[Drupal] Coach video and marker editor",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-17"],
+      "dependencies": ["EXT-005"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Markers carry corner, start, end, condition and label"]
+    },
+    {
+      "id": "EXT-008",
+      "title": "[Drupal] Feedback endpoint and coach feedback list",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-29", "R-32"],
+      "dependencies": ["EXT-001"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["POST feedback returns 201; list filters by track and condition"]
+    },
+    {
+      "id": "EXT-009",
+      "title": "[Drupal] Theme endpoint and coach theme page",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 1,
+      "moscow": "Must",
+      "priority": "high",
+      "requirements": ["R-04", "R-05"],
+      "dependencies": ["EXT-001"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["tenant/theme supports ETag/304; coach preview shows both modes"]
+    },
+    {
+      "id": "EXT-010",
+      "title": "[Drupal] app/config endpoint (minimum app version)",
+      "description": "External dependency built in the Drupal repository.",
+      "release_phase": 2,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-19"],
+      "dependencies": ["EXT-001"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": ["Returns min_version and message"]
+    }
+  ],
   "phases_legend": {
     "inception": "Feature has been identified but not yet planned",
     "planning": "Requirements and approach being defined",
@@ -23,5 +765,10 @@
     "blocked": "Cannot proceed without external input",
     "complete": "Phase finished successfully",
     "skipped": "Phase intentionally skipped"
+  },
+  "release_phases_legend": {
+    "1": "Pilot: everything the pilot needs on both platforms",
+    "2": "Store release",
+    "3": "Operational tooling; opens the future-release backlog"
   }
 }

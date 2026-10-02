@@ -107,7 +107,7 @@ Once user approves, create the files:
 
 ```bash
 # Create directory structure if not exists
-mkdir -p .claude/memory .claude/agents/specialists .claude/templates docs
+mkdir -p .claude/memory .claude/agents/domains .claude/templates docs
 
 # You will then CREATE each file with appropriate content
 ```
@@ -118,8 +118,10 @@ mkdir -p .claude/memory .claude/agents/specialists .claude/templates docs
 3. `.claude/memory/decisions.md` - Populated with initial decisions
 4. `.claude/memory/issues.md` - Empty but structured
 5. `docs/ARCHITECTURE.md` - High-level architecture documentation
-6. `docs/SCRATCHPAD.md` - Empty working memory file
-7. `CLAUDE.md` - Root context file (most important!)
+6. `CLAUDE.md` - Root context file (most important!)
+
+No SCRATCHPAD.md: working notes and handoff context go in `progress.log`
+(see `docs/plans/2025-12-09-domain-memory-integration-design.md`).
 
 ### Step 5: Final Summary
 
@@ -136,7 +138,6 @@ Present the initialization summary:
    .claude/memory/decisions.md     [X decisions recorded]
    .claude/memory/issues.md        [ready]
    docs/ARCHITECTURE.md            [created]
-   docs/SCRATCHPAD.md              [ready]
    CLAUDE.md                       [project context]
 
 📋 Features Breakdown:

@@ -3,56 +3,53 @@
 # Format: SESSION START/END markers with structured content
 
 ================================================================================
-[TEMPLATE - DELETE AFTER FIRST REAL ENTRY]
-
-[YYYY-MM-DD HH:MM] SESSION START
-Feature: [FEATURE-ID] — [Feature Title]
-Task: [TASK-ID] — [Task Description]
-Context loaded: features.json, progress.log tail, decisions.md
-================================================================================
-
-[HH:MM] ACTION: [What was done]
-  - [Details]
-
-[HH:MM] TEST: [Test results]
-  - [X/Y passing]
-
-[HH:MM] DECISION: [Decision made] (see DEC-XXX)
-
-[HH:MM] BLOCKER: [Description]
-
-================================================================================
-[YYYY-MM-DD HH:MM] SESSION END
-Feature: [ID] — [Title]
-Task: [TASK-ID] — [Description]
+[2026-10-02] SESSION END
+Feature: — (project initialization)
+Task: /setup — domain memory initialization
 
 COMPLETED:
-- [What was accomplished]
+- Read spec (docs/specs/Track Guide – Project & Implementation Plan.md) and prototype README
+- Feature breakdown approved: 34 app features + 10 external Drupal features (EXT-*)
+- Recorded DEC-001 – DEC-008 and ISS-001 – ISS-005
+- Created docs/database/mobile-erd.md (local DB ERD, Mermaid), approved as DEC-008
+- Created docs/ARCHITECTURE.md
+- Updated CLAUDE.md Quick Reference for Flutter
+- Updated .claude/agents/INITIALIZER.md to match the domain memory design doc
+  (no SCRATCHPAD.md; .claude/agents/domains instead of .claude/agents/specialists)
+- Deleted untracked .claude/skills/claude-android-skill-main/ (not used, DEC-001)
+- Committed spec and Claude Design prototype (reference/)
 
 IN PROGRESS:
-- [What was started but not finished]
+- Nothing
 
-TESTS: [X/Y passing]
+TESTS: n/a (no code yet)
 
-DECISIONS: [DEC-XXX — brief description]
+DECISIONS: DEC-001 app-only repo · DEC-002 stack · DEC-003 mock API · DEC-004 license model ·
+DEC-005 protection · DEC-006 iOS CI runner · DEC-007 prototype is visual source · DEC-008 local DB schema
 
 FILES CHANGED:
-+ [new files]
-M [modified files]
++ docs/database/mobile-erd.md
++ docs/ARCHITECTURE.md
+M .claude/memory/features.json
+M .claude/memory/progress.log
+M .claude/memory/decisions.md
+M .claude/memory/issues.md
+M .claude/agents/INITIALIZER.md
+M CLAUDE.md
 
-BLOCKERS: [Any blockers]
+BLOCKERS:
+- Node.js not installed (ISS-005): MCP servers down, flutter/skills install not possible via npx
 
 NEXT SESSION:
-- [Recommended next actions]
-- [Open questions]
+- Resolve ISS-005 (install Node or clone flutter/skills with git)
+- /plan FND-001, including package research (ISS-004)
+- Open Apple Developer and Google Play accounts early (they take days)
 
 CONTEXT FOR NEXT SESSION:
-[Free-form notes for handoff]
+- Critical path: FND-001 → FND-004/FND-005 → FND-006 → SYN-001; LIC-001 → PRT-003 → LIC-002/LIC-003
+- Pilot candidate dates (not committed): NK Huurkarten Antwerpen 17 Oct, Eefde 28 Nov, Lelystad 12 Dec 2026
+- Pilot tenant: Chrono Motorsport (coaches Max and Vincent)
+- Untracked, not committed: .claude/skills/mobile-ux-best-practices/ and .DS_Store files
 
-Commit: [hash] "[message]"
+Commit: "chore: initialize ApexGuide domain memory" (see git log)
 ================================================================================
-
-# ============================================================================
-# ACTUAL PROGRESS BEGINS BELOW
-# ============================================================================
-

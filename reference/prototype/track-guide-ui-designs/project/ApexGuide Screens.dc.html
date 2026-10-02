@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="stylesheet" href="./modernist.css"><style>body{margin:0;background:#f3f2f2;font-family:"Archivo",system-ui,sans-serif;color:#201e1d}a{color:#00a19b}a:hover{color:#007571}.dv-turn{padding:40px 44px 32px;border-bottom:2px solid rgba(32,30,29,.4);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#201e1d;color:#fff;text-decoration:none}.dv-tname{font:600 13px/1.2 "Archivo",sans-serif;color:#201e1d}.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(32,30,29,.08);color:#201e1d;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 "Archivo",sans-serif;color:rgba(32,30,29,.6);max-width:412px}.dv-opt:target .dv-oid{background:#00a19b;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 "Archivo",sans-serif;color:rgba(32,30,29,.55)}.dv-notes{max-width:760px;font:13px/1.55 "Archivo",sans-serif;color:#201e1d;margin:0 0 28px;padding:16px 0 0;border-top:2px solid rgba(32,30,29,.4)}.dv-notes b{font-weight:800}</style></helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">ApexGuide · Track list, Track (Layout / Corners tabs), Corner detail · Chrono Motorsport · Android · light</span></div>
+<p class="dv-notes"><b>Assumptions.</b> Modernist system (Archivo, one red accent, 0 radius, 2px rules, flush-left labels) stands in for the Chrono Motorsport tenant theme: primary teal #00a19b on toggle, hotspots, kickers and primary actions; the active corner is ink-black, matching the logo’s black ring. Layout images arrive from coaches with the racing line drawn in, roughly 10:7; shown as placeholders. <b>UX guide applied:</b> 48px+ tap targets, primary actions in the thumb zone, one task per screen, three levels deep, no hidden gestures (pinch-zoom has a visible hint), consistent back affordance. Content protection and dark mode are not visualised here.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Track list — search, country filter, favorites first, indoor/outdoor and updated badges</div>
+<x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="412px,892px">
+<div data-screen-label="Track list" style="height:100%;display:flex;flex-direction:column;background:#f3f2f2;color:#201e1d;font-family:'Archivo',system-ui,sans-serif">
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 16px 12px;border-bottom:2px solid rgba(32,30,29,.4)">
+    <img src="./uploads/pasted-1790885039112-0.png" alt="Chrono Motorsport" style="width:44px;height:44px;object-fit:contain;flex:none;margin-left:-6px">
+    <div style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#007571;font-weight:800">Chrono Motorsport</div><div style="font-size:20px;font-weight:800;line-height:1.1;letter-spacing:-.015em">Tracks</div></div>
+    <div style="width:48px;height:48px;display:grid;place-items:center;margin-right:-8px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></div>
+  </div>
+  <div style="padding:12px 16px 0;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:center;gap:10px;height:48px;padding:0 12px;background:#eae9e9;border:1px solid rgba(32,30,29,.4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span style="font-size:15px;color:rgba(32,30,29,.55)">Search by name</span></div>
+    <div style="display:flex;gap:8px;overflow:hidden">
+      <sc-for list="{{ countries }}" as="c" hint-placeholder-count="4"><div style="height:36px;padding:0 14px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;border:1px solid rgba(32,30,29,.4);background: {{ c.bg }};color: {{ c.fg }};white-space:nowrap">{{ c.label }}</div></sc-for>
+    </div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:0 16px 16px">
+    <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00a19b;font-weight:800;padding:18px 0 6px;border-bottom:2px solid rgba(32,30,29,.4)">Favorites</div>
+    <sc-for list="{{ favorites }}" as="t" hint-placeholder-count="2">
+      <div style="display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 0;border-bottom:1px solid rgba(32,30,29,.4)">
+        <div style="width:40px;height:40px;background:#201e1d;color:#f3f2f2;display:grid;place-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;flex:none">{{ t.country }}</div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:800;line-height:1.15;letter-spacing:-.01em">{{ t.name }}</div><div style="font-size:12px;color:rgba(32,30,29,.6)">{{ t.address }}</div><div style="display:flex;gap:6px;margin-top:2px"><span style="font-size:10px;letter-spacing:.04em;padding:2px 8px;background:#f8f4f4;color:#444141;border:1px solid rgba(32,30,29,.2)">{{ t.kind }}</span><sc-if value="{{ t.updated }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;letter-spacing:.04em;padding:2px 8px;background:#e0f4f3;color:#00403d">Updated</span></sc-if></div></div>
+        <div style="width:48px;height:48px;display:grid;place-items:center;margin-right:-10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="#00a19b" stroke="#00a19b" stroke-width="2" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"></path></svg></div>
+      </div>
+    </sc-for>
+    <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00a19b;font-weight:800;padding:22px 0 6px;border-bottom:2px solid rgba(32,30,29,.4)">All tracks · 8</div>
+    <sc-for list="{{ others }}" as="t" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 0;border-bottom:1px solid rgba(32,30,29,.4)">
+        <div style="width:40px;height:40px;background:#eae9e9;color:#201e1d;display:grid;place-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;flex:none">{{ t.country }}</div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:800;line-height:1.15;letter-spacing:-.01em">{{ t.name }}</div><div style="font-size:12px;color:rgba(32,30,29,.6)">{{ t.address }}</div><div style="display:flex;gap:6px;margin-top:2px"><span style="font-size:10px;letter-spacing:.04em;padding:2px 8px;background:#f8f4f4;color:#444141;border:1px solid rgba(32,30,29,.2)">{{ t.kind }}</span><sc-if value="{{ t.updated }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;letter-spacing:.04em;padding:2px 8px;background:#e0f4f3;color:#00403d">Updated</span></sc-if></div></div>
+        <div style="width:48px;height:48px;display:grid;place-items:center;margin-right:-10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9b9797" stroke-width="2" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"></path></svg></div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-import></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Track — Layout tab. Dry/wet toggle (outdoor only), zoomable image with numbered hotspots, selected corner as a peek bar in the thumb zone</div>
+<x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="412px,892px">
+<div data-screen-label="Track · Layout" style="height:100%;display:flex;flex-direction:column;background:#f3f2f2;color:#201e1d;font-family:'Archivo',system-ui,sans-serif">
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 10px 4px;border-bottom:2px solid rgba(32,30,29,.4)">
+    <div style="width:48px;height:48px;display:grid;place-items:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><div style="font-size:18px;font-weight:800;line-height:1.1;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Kartbaan Lelystad – Long</div><div style="font-size:12px;color:rgba(32,30,29,.6)">Talingweg 85, Lelystad · Outdoor · 10 corners</div></div>
+    <div style="width:48px;height:48px;display:grid;place-items:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="#00a19b" stroke="#00a19b" stroke-width="2" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"></path></svg></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0">
+    <div style="display:flex;border:1px solid rgba(32,30,29,.4)"><div style="height:40px;padding:0 18px;display:flex;align-items:center;font-size:13px;font-weight:800;background:#00a19b;color:#f3f2f2">Dry</div><div style="height:40px;padding:0 18px;display:flex;align-items:center;font-size:13px;font-weight:600;border-left:1px solid rgba(32,30,29,.4)">Wet</div></div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(32,30,29,.6)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5M11 8v6M8 11h6"></path></svg>Pinch to zoom</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;margin:14px 16px 0;border-bottom:2px solid rgba(32,30,29,.4)">
+    <div style="height:44px;display:flex;align-items:center;font-size:14px;font-weight:800;color:#201e1d;box-shadow:inset 0 -3px 0 #00a19b">Layout</div>
+    <div style="height:44px;display:flex;align-items:center;font-size:14px;font-weight:600;color:rgba(32,30,29,.6)">Corners</div>
+  </div>
+  <div style="flex:1;overflow:auto;display:flex;flex-direction:column">
+    <div style="position:relative;margin:16px;aspect-ratio:10/7;background:repeating-linear-gradient(135deg,#eae9e9 0 10px,#e2e0e0 10px 20px);border:1px solid rgba(32,30,29,.25);overflow:hidden">
+      <div style="position:absolute;left:12px;bottom:10px;font:11px/1.3 ui-monospace,Menlo,monospace;color:rgba(32,30,29,.6)">layout image · dry · 2000×1400<br>racing line drawn in by coach</div>
+      <sc-for list="{{ hotspots }}" as="h" hint-placeholder-count="10">
+        <div style="position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;display:grid;place-items:center;left: {{ h.left }};top: {{ h.top }}"><div style="width:30px;height:30px;display:grid;place-items:center;font-size:13px;font-weight:800;background: {{ h.bg }};color: {{ h.fg }};box-shadow: {{ h.ring }}">{{ h.n }}</div></div>
+      </sc-for>
+    </div>
+    <div style="padding:4px 16px 0;display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00a19b;font-weight:800;padding-bottom:6px;border-bottom:2px solid rgba(32,30,29,.4)">Videos · 2</div>
+      <div style="display:flex;gap:10px;overflow:hidden">
+        <sc-for list="{{ videos }}" as="v" hint-placeholder-count="2"><div style="flex:none;width:200px;display:flex;flex-direction:column;background:#eae9e9"><div style="aspect-ratio:16/9;background:repeating-linear-gradient(135deg,#444141 0 8px,#3a3838 8px 16px);display:grid;place-items:center;position:relative"><div style="width:40px;height:40px;background:#00a19b;display:grid;place-items:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#f3f2f2"><path d="M6 4l14 8-14 8z"></path></svg></div><div style="position:absolute;left:8px;bottom:6px;font:10px ui-monospace,Menlo,monospace;color:rgba(243,242,242,.7)">youtube thumbnail</div></div><div style="padding:8px 10px;display:flex;flex-direction:column;gap:2px"><div style="font-size:13px;font-weight:800">{{ v.title }}</div><div style="font-size:11px;color:rgba(32,30,29,.6)">{{ v.meta }}</div></div></div></sc-for>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:stretch;border-top:2px solid rgba(32,30,29,.4);background:#f3f2f2">
+    <div style="flex:1;display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:64px"><div style="width:36px;height:36px;background:#201e1d;color:#f3f2f2;display:grid;place-items:center;font-size:15px;font-weight:800">4</div><div style="display:flex;flex-direction:column"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(32,30,29,.6);font-weight:600">Selected</div><div style="font-size:15px;font-weight:800">Corner 4 · Dry</div></div></div>
+    <div style="display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:0 18px;background:#00a19b;color:#f3f2f2;font-size:14px;font-weight:800;min-width:120px">Open<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></div>
+  </div>
+</div>
+</x-import></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Track — Corners tab. Same header, numbered list with 64px rows; the clip count tells the driver where video exists</div>
+<x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="412px,892px">
+<div data-screen-label="Track · Corners" style="height:100%;display:flex;flex-direction:column;background:#f3f2f2;color:#201e1d;font-family:'Archivo',system-ui,sans-serif">
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 10px 4px;border-bottom:2px solid rgba(32,30,29,.4)">
+    <div style="width:48px;height:48px;display:grid;place-items:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><div style="font-size:18px;font-weight:800;line-height:1.1;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Kartbaan Lelystad – Long</div><div style="font-size:12px;color:rgba(32,30,29,.6)">Talingweg 85, Lelystad · Outdoor · 10 corners</div></div>
+    <div style="width:48px;height:48px;display:grid;place-items:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="#00a19b" stroke="#00a19b" stroke-width="2" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"></path></svg></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0">
+    <div style="display:flex;border:1px solid rgba(32,30,29,.4)"><div style="height:40px;padding:0 18px;display:flex;align-items:center;font-size:13px;font-weight:600">Dry</div><div style="height:40px;padding:0 18px;display:flex;align-items:center;font-size:13px;font-weight:800;border-left:1px solid rgba(32,30,29,.4);background:#00a19b;color:#f3f2f2">Wet</div></div>
+    <div style="font-size:11px;color:rgba(32,30,29,.6)">Wet content loaded</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;margin:14px 16px 0;border-bottom:2px solid rgba(32,30,29,.4)">
+    <div style="height:44px;display:flex;align-items:center;font-size:14px;font-weight:600;color:rgba(32,30,29,.6)">Layout</div>
+    <div style="height:44px;display:flex;align-items:center;font-size:14px;font-weight:800;color:#201e1d;box-shadow:inset 0 -3px 0 #00a19b">Corners</div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:0 16px 16px">
+    <sc-for list="{{ cornerRows }}" as="c" hint-placeholder-count="10">
+      <div style="display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 0;border-bottom:1px solid rgba(32,30,29,.4)">
+        <div style="width:44px;height:44px;display:grid;place-items:center;font-size:18px;font-weight:800;flex:none;background: {{ c.bg }};color: {{ c.fg }}">{{ c.n }}</div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:800">Corner {{ c.n }}</div><div style="font-size:12px;color:rgba(32,30,29,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.hint }}</div></div>
+        <sc-if value="{{ c.clips }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#007571"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"></path></svg>{{ c.clips }}</div></sc-if>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9b9797" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+      </div>
+    </sc-for>
+    <div style="display:flex;align-items:center;gap:10px;height:52px;margin-top:20px;padding:0 14px;border:1px solid rgba(32,30,29,.4);font-size:14px;font-weight:800"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12M15 5.9 14 10h5.8a2 2 0 0 1 1.9 2.6l-2.3 7a2 2 0 0 1-1.9 1.4H7V10l4-8a3 3 0 0 1 3 3z"></path></svg>Give feedback on this track · Wet</div>
+  </div>
+</div>
+</x-import></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Corner detail. Condition badge, four stacked sections in order, clip buttons at the marker, previous/next pinned in the thumb zone</div>
+<x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="412px,892px">
+<div data-screen-label="Corner detail" style="height:100%;display:flex;flex-direction:column;background:#f3f2f2;color:#201e1d;font-family:'Archivo',system-ui,sans-serif">
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 10px 4px;border-bottom:2px solid rgba(32,30,29,.4)">
+    <div style="width:48px;height:48px;display:grid;place-items:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><div style="font-size:12px;color:rgba(32,30,29,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Kartbaan Lelystad – Long</div><div style="font-size:22px;font-weight:800;line-height:1.05;letter-spacing:-.015em">Corner 4</div></div>
+    <div style="height:28px;padding:0 10px;display:flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#00a19b;color:#f3f2f2;margin-right:8px">Dry</div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:0 16px 20px">
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 0 12px;border-bottom:1px solid rgba(32,30,29,.4)">
+      <div style="width:72px;height:50px;position:relative;background:repeating-linear-gradient(135deg,#eae9e9 0 6px,#e2e0e0 6px 12px);border:1px solid rgba(32,30,29,.25);flex:none"><div style="position:absolute;left:50px;top:12px;width:16px;height:16px;background:#201e1d;color:#f3f2f2;font-size:9px;font-weight:800;display:grid;place-items:center">4</div></div>
+      <div style="font-size:12px;color:rgba(32,30,29,.6);line-height:1.4">Right-hander after the back straight. 4 of 10.</div>
+    </div>
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
+      <div style="padding:18px 0 16px;border-bottom:2px solid rgba(32,30,29,.4);display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:11px;font-weight:800;color:#00a19b;font-variant-numeric:tabular-nums">0{{ s.i }}</span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00a19b;font-weight:800">{{ s.title }}</span></div>
+        <div style="font-size:16px;line-height:1.5;text-wrap:pretty">{{ s.body }}</div>
+        <sc-if value="{{ s.clip }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;height:48px;padding:0 12px;margin-top:4px;border:1px solid rgba(32,30,29,.4);background:#eae9e9"><div style="width:28px;height:28px;background:#00a19b;display:grid;place-items:center;flex:none"><svg width="12" height="12" viewBox="0 0 24 24" fill="#f3f2f2"><path d="M6 4l14 8-14 8z"></path></svg></div><div style="flex:1;min-width:0;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.clip }}</div><div style="font:12px ui-monospace,Menlo,monospace;color:rgba(32,30,29,.6)">{{ s.clipTime }}</div></div></sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;border-top:2px solid rgba(32,30,29,.4);background:#f3f2f2">
+    <div style="height:64px;display:flex;align-items:center;gap:10px;padding:0 16px;border-right:1px solid rgba(32,30,29,.4);font-size:14px;font-weight:800"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Corner 3</div>
+    <div style="height:64px;display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 16px;background:#201e1d;color:#f3f2f2;font-size:14px;font-weight:800">Corner 5<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></div>
+  </div>
+</div>
+</x-import></div>
+
+</div>
+<p class="dv-next">Try next: "make the hotspots in <a class="dv-oid" href="#1b">1b</a> bigger for gloves" · "show <a class="dv-oid" href="#1d">1d</a> in track-day mode and Dutch" · "collapse the four sections in <a class="dv-oid" href="#1d">1d</a> into an accordion" · "dark mode set of all four"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;selectedCorner&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:1,&quot;max&quot;:10,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Track&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const sel = this.props.selectedCorner ?? 4;
+    const tracks = [
+      { name: 'Kartbaan Lelystad – Long', address: 'Talingweg 85, Lelystad', country: 'NL', kind: 'Outdoor', updated: true, fav: true },
+      { name: 'Karting Eefde', address: 'Zutphenseweg 86, Eefde', country: 'NL', kind: 'Outdoor', updated: false, fav: true },
+      { name: 'Kartbaan Lelystad – Short', address: 'Talingweg 85, Lelystad', country: 'NL', kind: 'Outdoor', updated: true },
+      { name: 'Karting Genk', address: 'Europalaan 555, Genk', country: 'BE', kind: 'Outdoor' },
+      { name: 'Antwerpen Indoor', address: 'Noorderlaan 99, Antwerpen', country: 'BE', kind: 'Indoor' },
+      { name: 'De Landsard', address: 'Landsardseweg 11, Eindhoven', country: 'NL', kind: 'Outdoor' },
+      { name: 'Kartbahn Kerpen', address: 'Kerpener Str. 4, Kerpen', country: 'DE', kind: 'Outdoor' },
+      { name: 'Berghem Indoor', address: 'Osseweg 1, Berghem', country: 'NL', kind: 'Indoor' },
+    ];
+    const countries = ['All', 'NL', 'BE', 'DE'].map((label, i) => ({ label, bg: i === 0 ? '#00a19b' : 'transparent', fg: i === 0 ? '#f3f2f2' : '#201e1d' }));
+    const pts = [[0.18,0.22],[0.36,0.14],[0.58,0.18],[0.80,0.30],[0.86,0.56],[0.70,0.74],[0.52,0.62],[0.38,0.82],[0.16,0.74],[0.10,0.46]];
+    const hotspots = pts.map(([x, y], i) => {
+      const on = i + 1 === sel;
+      return { n: i + 1, left: (x * 100) + '%', top: (y * 100) + '%', bg: on ? '#201e1d' : '#00a19b', fg: '#f3f2f2', ring: on ? '0 0 0 3px #f3f2f2, 0 0 0 5px #201e1d' : 'none' };
+    });
+    const hints = ['Flat-out left kink after start', 'Tight hairpin, heavy braking', 'Fast double right', 'Right-hander after back straight', 'Long left, carry speed', 'Chicane entry', 'Chicane exit, early throttle', 'Slow left, overtaking spot', 'Medium right', 'Final left onto the straight'];
+    const cornerRows = hints.map((hint, i) => ({ n: i + 1, hint, clips: [1, 3, 5].includes(i) ? '2 clips' : i === 7 ? '1 clip' : '', bg: i + 1 === sel ? '#201e1d' : '#eae9e9', fg: i + 1 === sel ? '#f3f2f2' : '#201e1d' }));
+    const sections = [
+      { i: 1, title: 'Approach', body: 'Stay hard left along the straight and let the kart drift to the kerb. Look through to the apex early; the corner is tighter than it looks from the braking boards.' },
+      { i: 2, title: 'Braking zone', body: 'Brake at the second board, one firm stab then release in two steps. Keep the wheel straight until the brake is almost off, then turn in on the trailing brake.', clip: 'Onboard, dry · Braking reference', clipTime: '0:42–0:51' },
+      { i: 3, title: 'Apex / Turning point', body: 'Late apex: aim for the end of the inside kerb, not the middle. Two wheels on the kerb are fine in the dry. Full throttle as soon as the kart points at the exit kerb.' },
+      { i: 4, title: 'Overtaking / Defending', body: 'Best move is up the inside on the brakes. To defend, take the inside line on approach and accept a slower exit; nobody passes you on the way to corner 5.', clip: 'Race onboard · Inside pass', clipTime: '2:14–2:26' },
+    ];
+    const videos = [{ title: 'Onboard, dry', meta: '4:12 · 6 markers' }, { title: 'Race onboard', meta: '12:40 · 3 markers' }];
+    return { countries, favorites: tracks.filter(t => t.fav), others: tracks.filter(t => !t.fav), hotspots, cornerRows, sections, videos };
+  }
+}
+</script>
+</body>
+</html>

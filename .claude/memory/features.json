@@ -53,7 +53,8 @@
         "App builds and runs on Android and iOS",
         "Portrait orientation locked",
         "go_router routes exist for activation, first sync, track list, track, corner, settings and locked screens (placeholders)",
-        "Lints and `flutter test` run clean"
+        "Lints and `flutter test` run clean",
+        "Launcher icons generated from the ApexGuide app icon (app_icon, 1024 × 1024; see ISS-006)"
       ]
     },
     {
@@ -229,7 +230,8 @@
         "Key format: 4 groups of 4 characters, no ambiguous letters",
         "Error states for unknown key (404), revoked (403), bound elsewhere (409) and offline",
         "Token stored in secure storage, never in the database",
-        "Successful activation leads to first sync"
+        "Successful activation leads to first sync",
+        "Layout follows prototype screen 3a (ApexGuide logo, grouped key field, Activate as primary action); demo mode (LIC-006) and QR scan (UX-004) are Phase 2"
       ]
     },
     {
@@ -433,7 +435,9 @@
       "acceptance_criteria": [
         "Native splash identical for all tenants",
         "Branded start screen shown only when a theme is cached",
-        "Activation screen never shows a tenant logo"
+        "Activation screen never shows a tenant logo",
+        "Default splash follows prototype screen 2a (ApexGuide logo on white)",
+        "Branded splash follows prototype screen 2b (tenant logo, tenant-colored progress rule, 'powered by ApexGuide' at the foot)"
       ]
     },
     {
@@ -468,7 +472,8 @@
         "Signed APK installable from a link",
         "macOS runner workflow builds and uploads to TestFlight internal group",
         "Signing secrets stored as GitHub secrets, never in the repo",
-        "Apple Developer and Google Play accounts opened"
+        "Apple Developer and Google Play accounts opened",
+        "Builds use the ApexGuide app icon from FND-001"
       ]
     },
     {
@@ -522,6 +527,25 @@
       ]
     },
     {
+      "id": "LIC-006",
+      "title": "Demo mode via shared demo key",
+      "description": "'Continue in demo mode' on the activation screen (prototype 3a) activates with a demo key built into the app. The key belongs to a server-side demo tenant whose key an admin has marked as allowed on many devices (DEC-009), so demo content can change without an app release. After that, the normal license, sync and wipe flows apply. Also serves as the Apple reviewer path for DST-002.",
+      "release_phase": 2,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-21"],
+      "dependencies": ["LIC-002", "LIC-003", "SYN-001"],
+      "external_dependencies": ["EXT-011"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Demo mode button activates with the built-in demo key and leads to first sync",
+        "Demo content comes only from the demo tenant via the normal API; nothing is bundled in the app",
+        "DEMO marker visible while in demo mode; feedback is not sent to any club",
+        "Activating a real key from Settings wipes demo content first, then activates",
+        "Demo key is read from build configuration, not hardcoded in widget code"
+      ]
+    },
+    {
       "id": "UX-001",
       "title": "Track-day mode",
       "description": "Settings switch: base font one step larger, high contrast, screen awake on Track and Corner screens, enlarged previous/next controls for gloves.",
@@ -571,6 +595,23 @@
       ]
     },
     {
+      "id": "UX-004",
+      "title": "Scan QR code to activate",
+      "description": "'Scan QR code instead' on the activation screen (prototype 3a): scan a coach-provided QR code that holds the activation key, then use the normal activate flow.",
+      "release_phase": 2,
+      "moscow": "Could",
+      "priority": "low",
+      "requirements": ["R-21"],
+      "dependencies": ["LIC-002"],
+      "external_dependencies": ["EXT-003"],
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Scanning a valid code fills the key and starts activation",
+        "Camera permission asked only when the driver taps scan; denial falls back to typing",
+        "Coach license page can show a key as a QR code"
+      ]
+    },
+    {
       "id": "DST-002",
       "title": "Store listings and unlisted Apple distribution",
       "description": "Play closed testing then public listing; TestFlight external then unlisted App Store distribution; reviewer demo key and note, privacy policy URL, age rating for minors, screenshots in both modes.",
@@ -583,7 +624,7 @@
       "lifecycle": { "phase": "inception", "status": "pending" },
       "acceptance_criteria": [
         "App available on Play and as unlisted App Store app",
-        "Reviewer demo key works against the demo tenant",
+        "Reviewer demo key works against the demo tenant (the shared demo key from LIC-006 / EXT-011)",
         "Privacy policy reviewed before submission"
       ]
     },
@@ -749,6 +790,24 @@
       "external": true,
       "lifecycle": { "phase": "inception", "status": "pending" },
       "acceptance_criteria": ["Returns min_version and message"]
+    },
+    {
+      "id": "EXT-011",
+      "title": "[Drupal] Demo tenant and admin override for multi-device keys",
+      "description": "External dependency built in the Drupal repository. Platform admins (not coaches) can mark a key as allowed on many devices, overriding the one-key-per-installation rule (DEC-009). Used for the shared demo key of the demo tenant.",
+      "release_phase": 2,
+      "moscow": "Should",
+      "priority": "medium",
+      "requirements": ["R-21"],
+      "dependencies": ["EXT-002", "EXT-004"],
+      "external": true,
+      "lifecycle": { "phase": "inception", "status": "pending" },
+      "acceptance_criteria": [
+        "Only the platform admin role can set or clear the multi-device flag",
+        "activate with a multi-device key never returns 409",
+        "Demo tenant holds only content that is safe to show publicly",
+        "activate is rate-limited per installation for multi-device keys"
+      ]
     }
   ],
   "phases_legend": {

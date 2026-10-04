@@ -211,6 +211,32 @@ The spec's data model describes the server. The app's local schema needs to fit 
 
 ---
 
+### DEC-009: Demo mode uses a server-side demo tenant and a shared demo key
+**Date:** 2026-10-04
+**Status:** Accepted
+**Deciders:** Project owner
+**Related:** LIC-006, EXT-011, DST-002, DEC-004; prototype screen 3a
+
+**Context:**
+The activation screen in the prototype (3a) offers "Continue in demo mode" for drivers without a code. Apple also needs a working path in for app review. The original idea was to bundle demo content in the app.
+
+**Decision:**
+1. Demo content lives in a separate demo tenant in Drupal, not in the app, so it can change without an app release
+2. The app has a shared demo key built in and uses the normal `activate` endpoint; license, sync and wipe flows stay the same
+3. Exception to DEC-004: a platform admin (not a coach) can mark a key as allowed on many devices. The demo key carries this flag, so it never returns 409
+4. The same demo key serves as the Apple reviewer key
+
+**Alternatives considered:**
+- Bundled demo content: needs an app release for every content change
+- A separate endpoint that needs no login: a second way into the API, plus special cases in license and sync logic
+
+**Consequences:**
+- The demo key can be extracted from the app, so the demo tenant must only hold content that is safe to show publicly
+- Replacing a leaked or abused demo key needs an app release; Drupal rate-limits `activate` for multi-device keys
+- The license state machine needs no demo-specific branch
+
+---
+
 ## Superseded/Deprecated Decisions
 
 *Decisions that have been replaced or are no longer relevant go here for historical reference.*

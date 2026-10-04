@@ -114,6 +114,21 @@ Pending: install Node (nodejs.org installer recommended) or clone flutter/skills
 
 ---
 
+### ISS-006: Logo variants exist only as one combined PNG
+**Reported:** 2026-10-04
+**Status:** Open
+**Severity:** Medium
+**Related Feature:** FND-001, THM-002, DST-001
+
+**Symptoms:**
+- The prototype README lists separate SVGs (logo_full, app_icon, mark, mark_app_icon, colors, racing_line, A_shape, kerb_stripe, wordmark, horizontal_lockup) and app_icon.png, but the repo only has `Logo options design.png` (all variants on one sheet) and `ApexGuide - Logo on White.png`.
+- Both PNGs have soft edges, which look muddy at small launcher icon sizes.
+
+**Resolution:**
+Pending: the project owner is creating a separate SVG per variant. FND-001 needs at least a clean 1024 × 1024 app icon before launcher icons are generated.
+
+---
+
 ## Resolved Issues
 
 *Resolved issues are moved here with full investigation and resolution notes.*

@@ -83,3 +83,4 @@ See `.claude/memory/decisions.md`:
 | DEC-006 | iOS builds on a GitHub Actions macOS runner |
 | DEC-007 | Claude Design prototype is the visual source of truth |
 | DEC-008 | Local database schema |
+| DEC-009 | Demo mode via a server-side demo tenant and shared demo key |

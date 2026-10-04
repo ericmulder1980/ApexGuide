@@ -356,7 +356,7 @@ Assumptions: one tenant per device (a driver in two teams needs two devices or a
 
 Open decisions before development starts:
 
-- [x] App name: ApexGuide; the neutral icon is still to be designed
+- [x] App name: ApexGuide; logo and app icon designed (`reference/prototype/track-guide-ui-designs/Logo options design.png`), separate SVG files still to be made
 - [x] Crash reporting: Sentry; CI: GitHub Actions, with a macOS runner for iOS builds
 - [x] License key format: 4 groups of 4 characters, no ambiguous letters; coaches can view existing keys in the central application
 - [x] Maximum layout image size: 2000 px on the long side, PNG or JPEG

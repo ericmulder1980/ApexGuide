@@ -53,21 +53,6 @@ DST-001 includes a minimal macOS runner workflow for iOS builds; OPS-001 extends
 
 ---
 
-### ISS-003: Inconsistent counts in the spec
-**Reported:** 2026-10-02
-**Status:** Open
-**Severity:** Low
-**Related Feature:** —
-
-**Symptoms:**
-- API contract says "Seven purpose-built JSON endpoints" but lists 8 (the Drupal section says "eight endpoints").
-- App design says "Seven screens" but the table lists 8.
-
-**Resolution:**
-Correct the wording in the spec. No impact on features.
-
----
-
 ### ISS-004: App package choices not verified as current
 **Reported:** 2026-10-02
 **Status:** Open
@@ -116,6 +101,21 @@ Pending: the project owner is creating a separate SVG per variant. FND-001 needs
 ---
 
 ## Resolved Issues
+
+### ISS-003: Inconsistent counts in the spec
+**Reported:** 2026-10-02
+**Status:** Resolved (2026-10-05)
+**Severity:** Low
+**Related Feature:** —
+
+**Symptoms:**
+- API contract says "Seven purpose-built JSON endpoints" but lists 8 (the Drupal section says "eight endpoints").
+- App design says "Seven screens" but the table lists 8.
+
+**Resolution:**
+Removed the spelled-out counts instead of correcting them, so they cannot drift again: the API contract, Drupal API row, App design and backlog intro no longer state how many endpoints, screens, stories or epics there are; the tables are the source. No impact on features.
+
+---
 
 ### ISS-001: Settings screen has no backlog story
 **Reported:** 2026-10-02

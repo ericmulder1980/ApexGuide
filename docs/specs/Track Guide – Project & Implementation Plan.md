@@ -96,7 +96,7 @@ One tenant owns tracks, codes, licenses, feedback and a theme; a track owns corn
 
 ## API contract
 
-Seven purpose-built JSON endpoints under `/api/v1/`, served by a custom Drupal module; the app never talks to Drupal's generic JSON:API. All endpoints except `activate` require `Authorization: Bearer <license token>`; the token is a signed JWT carrying tenant\_id, key\_binding\_id, iat and exp (7 days).
+Purpose-built JSON endpoints under `/api/v1/`, served by a custom Drupal module; the app never talks to Drupal's generic JSON:API. All endpoints except `activate` require `Authorization: Bearer <license token>`; the token is a signed JWT carrying tenant\_id, key\_binding\_id, iat and exp (7 days).
 
 | Method | Path | Purpose | Response |
 | --- | --- | --- | --- |
@@ -183,7 +183,7 @@ Accessibility: the secure layer hides text from screen readers too. Accept this 
 
 ## App design
 
-Seven screens, three levels deep: activation, track list, track, corner. The app opens on the track list once activated; the license state gates everything below the activation screen.
+The app's screens, three levels deep: activation, track list, track, corner. The app opens on the track list once activated; the license state gates everything below the activation screen.
 
 | Screen | Purpose | Key elements |
 | --- | --- | --- |
@@ -218,7 +218,7 @@ Drupal 11 with the Group module for tenancy, Paragraphs for corners and video ma
 | License key | Custom entity `license_key` | Key, assigned\_to, created\_by, status, revoked\_at |
 | Key binding | Custom entity `key_binding` | Installation id, platform, app version, bound at, last check, refused attempts |
 | Feedback | Custom entity `feedback` | Track, condition, rating, text, app version, created at |
-| API | Custom routes in `trackguide` | The eight endpoints, JWT issuing and validation (firebase/php-jwt), key binding checks, tenant scoping on every query |
+| API | Custom routes in `trackguide` | The API endpoints, JWT issuing and validation (firebase/php-jwt), key binding checks, tenant scoping on every query |
 | Validation | Custom constraints | Sequential corner numbers, coordinates within 0 to 1, wet content required for outdoor tracks, layout images at most 2000 px on the long side (PNG or JPEG), both languages filled before a track can be published |
 
 Coach workflows, each a page inside the group:
@@ -248,7 +248,7 @@ Phase 1 milestones, in order:
 
 ## Development backlog
 
-Thirty-two stories in ten epics; Must and Should stories in Phase 1 form the pilot release, and Priority and Phase are editable here as the plan evolves.
+Stories are grouped by epic; Must and Should stories in Phase 1 form the pilot release, and Priority and Phase are editable here as the plan evolves.
 
 | Epic | Story | Req | Priority | Phase |
 | --- | --- | --- | --- | --- |

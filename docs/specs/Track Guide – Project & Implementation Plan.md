@@ -248,7 +248,7 @@ Phase 1 milestones, in order:
 
 ## Development backlog
 
-Twenty-nine stories in eight epics; Must and Should stories in Phase 1 form the pilot release, and Priority and Phase are editable here as the plan evolves.
+Thirty-two stories in ten epics; Must and Should stories in Phase 1 form the pilot release, and Priority and Phase are editable here as the plan evolves.
 
 | Epic | Story | Req | Priority | Phase |
 | --- | --- | --- | --- | --- |
@@ -259,6 +259,8 @@ Twenty-nine stories in eight epics; Must and Should stories in Phase 1 form the 
 | License | Daily refresh, 7-day token, wipe on expiry and on 403 keeping the installation id, clock-tamper guard | R-23, R-24, R-25 | Must | Phase 1 |
 | License | Coach pages: issue, list, reset and revoke license keys | R-32 | Must | Phase 1 |
 | License | Binding reset flow, including the 409 message in the app telling the driver to contact the coach | R-21 | Should | Phase 2 |
+| License | Demo mode: activate with a shared demo key from the activation screen; activate a real key later from Settings | R-21 | Should | Phase 1 |
+| License | Demo tenant and platform-admin override marking a key as allowed on many devices | R-21 | Should | Phase 1 |
 | Content | Track list with search, country filter, favorites and indoor badge | R-06, R-08 | Must | Phase 1 |
 | Content | Track screen: zoomable layout image with corner hotspots and corner list | R-09, R-10, R-12 | Must | Phase 1 |
 | Content | Dry/wet toggle swapping image and content; hidden for indoor tracks | R-11, R-14, R-15 | Must | Phase 1 |
@@ -274,7 +276,8 @@ Twenty-nine stories in eight epics; Must and Should stories in Phase 1 form the 
 | Feedback | Feedback sheet with offline queue and retry | R-29 | Should | Phase 1 |
 | Feedback | Coach feedback list with filters and archive | R-29, R-32 | Should | Phase 1 |
 | Theming | Tenant theme endpoint, coach theme page with preview, branded start screen | R-04, R-05 | Must | Phase 1 |
-| UX | Track-day mode | R-30 | Could | Phase 2 |
+| UX | Settings screen: theme, language, license status and next check, version, wipe and re-activate | R-02, R-03 | Must | Phase 1 |
+| UX | Track-day mode, including its switch in Settings | R-30 | Could | Phase 2 |
 | UX | Updated badge on tracks changed since last visit | R-19 | Could | Phase 2 |
 | UX | Minimum-version check and update screen | R-19 | Should | Phase 2 |
 | Distribution | Manual Android APK and iOS TestFlight builds for the pilot | R-01 | Must | Phase 1 |

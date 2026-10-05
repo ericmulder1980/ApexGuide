@@ -1,7 +1,7 @@
 {
   "project": "ApexGuide",
   "version": "0.1.0",
-  "last_updated": "2026-10-02",
+  "last_updated": "2026-10-05",
   "metadata": {
     "created": "2026-10-02",
     "initialized_by": "user",
@@ -443,7 +443,7 @@
     {
       "id": "SET-001",
       "title": "Settings screen",
-      "description": "Theme (system, light, dark), language (en, nl), track-day mode switch (wired in UX-001), license status and next check, app version, wipe and re-activate. Not in the spec backlog; derived from the App design section (see ISS-001).",
+      "description": "Theme (system, light, dark), language (en, nl), license status and next check, app version, wipe and re-activate. No track-day switch in Phase 1; UX-001 adds it. In demo mode, LIC-006 adds the real-key activation entry. Derived from the App design section; added to the spec backlog (ISS-001).",
       "release_phase": 1,
       "moscow": "Must",
       "priority": "high",
@@ -454,7 +454,8 @@
       "acceptance_criteria": [
         "Theme and language overrides take effect immediately",
         "License status and next check shown",
-        "Wipe and re-activate asks for confirmation"
+        "Wipe and re-activate asks for confirmation",
+        "No track-day mode switch until UX-001 ships"
       ]
     },
     {
@@ -529,8 +530,8 @@
     {
       "id": "LIC-006",
       "title": "Demo mode via shared demo key",
-      "description": "'Continue in demo mode' on the activation screen (prototype 3a) activates with a demo key built into the app. The key belongs to a server-side demo tenant whose key an admin has marked as allowed on many devices (DEC-009), so demo content can change without an app release. After that, the normal license, sync and wipe flows apply. Also serves as the Apple reviewer path for DST-002.",
-      "release_phase": 2,
+      "description": "'Continue in demo mode' on the activation screen (prototype 3a) activates with a demo key built into the app. The key belongs to a server-side demo tenant whose key an admin has marked as allowed on many devices (DEC-009), so demo content can change without an app release. After that, the normal license, sync and wipe flows apply. Also serves as the Apple reviewer path for DST-002. Moved to Phase 1 (2026-10-05) to enable rapid testing.",
+      "release_phase": 1,
       "moscow": "Should",
       "priority": "medium",
       "requirements": ["R-21"],
@@ -794,8 +795,8 @@
     {
       "id": "EXT-011",
       "title": "[Drupal] Demo tenant and admin override for multi-device keys",
-      "description": "External dependency built in the Drupal repository. Platform admins (not coaches) can mark a key as allowed on many devices, overriding the one-key-per-installation rule (DEC-009). Used for the shared demo key of the demo tenant.",
-      "release_phase": 2,
+      "description": "External dependency built in the Drupal repository. Platform admins (not coaches) can mark a key as allowed on many devices, overriding the one-key-per-installation rule (DEC-009). Used for the shared demo key of the demo tenant. Phase 1 because LIC-006 needs it.",
+      "release_phase": 1,
       "moscow": "Should",
       "priority": "medium",
       "requirements": ["R-21"],

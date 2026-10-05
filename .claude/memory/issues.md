@@ -38,20 +38,6 @@ Track problems and their resolutions. Build institutional knowledge.
 
 ## Open Issues
 
-### ISS-001: Settings screen has no backlog story
-**Reported:** 2026-10-02
-**Status:** Open
-**Severity:** Medium
-**Related Feature:** SET-001
-
-**Symptoms:**
-- The spec's App design section describes a Settings screen (theme, language, track-day mode, license status, version, wipe), but none of the 29 backlog stories covers it.
-
-**Resolution:**
-SET-001 was added to features.json as a Phase 1 Must. Update the spec's backlog to match.
-
----
-
 ### ISS-002: iOS pilot builds need a CI runner before the Phase 3 pipeline story
 **Reported:** 2026-10-02
 **Status:** Open
@@ -130,6 +116,20 @@ Pending: the project owner is creating a separate SVG per variant. FND-001 needs
 ---
 
 ## Resolved Issues
+
+### ISS-001: Settings screen has no backlog story
+**Reported:** 2026-10-02
+**Status:** Resolved (2026-10-05)
+**Severity:** Medium
+**Related Feature:** SET-001
+
+**Symptoms:**
+- The spec's App design section describes a Settings screen (theme, language, track-day mode, license status, version, wipe), but none of the 29 backlog stories covers it.
+
+**Resolution:**
+SET-001 was added to features.json as a Phase 1 Must, and the spec backlog now has a matching Settings story. Track-day mode is left out of the Phase 1 Settings screen; UX-001 adds the switch in Phase 2. Demo mode (LIC-006, EXT-011) moved to Phase 1 for rapid testing; LIC-006 adds the real-key activation entry to Settings in demo mode. Both were added to the spec backlog too (now thirty-two stories in ten epics).
+
+---
 
 *Resolved issues are moved here with full investigation and resolution notes.*
 

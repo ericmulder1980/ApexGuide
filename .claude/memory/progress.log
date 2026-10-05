@@ -53,3 +53,103 @@ CONTEXT FOR NEXT SESSION:
 
 Commit: "chore: initialize ApexGuide domain memory" (see git log)
 ================================================================================
+
+================================================================================
+[2026-10-04 22:16] SESSION END (backfilled on 2026-10-05 from git history)
+Feature: — (design and backlog work, no feature in progress)
+Task: —
+
+COMPLETED:
+- Prototype: default and branded splash (2a/2b) and activation screen (3a)
+- Logo options sheet, logo-on-white PNG and first logo_full.svg
+- DEC-009: demo mode via a server-side demo tenant and shared demo key
+- New features LIC-006 and EXT-011 (Phase 2 at the time) and UX-004 (QR scan, Could)
+- ISS-006 opened: separate logo SVGs still to be made
+- Spec: app icon designed
+- Added skills: flutter-tester, mobile-ux-best-practices, owasp-mobile-security-checker
+- .DS_Store added to .gitignore
+
+IN PROGRESS:
+- Nothing
+
+TESTS: n/a (no code yet)
+
+DECISIONS: DEC-009 — demo mode via demo tenant and shared demo key
+
+FILES CHANGED:
++ reference/prototype/track-guide-ui-designs/ (logo assets, README additions)
++ .claude/skills/flutter-tester/, mobile-ux-best-practices/, owasp-mobile-security-checker/
+M .claude/memory/features.json, decisions.md, issues.md
+M docs/ARCHITECTURE.md, spec, .gitignore
+
+BLOCKERS: ISS-005 (Node.js missing, MCP servers down)
+
+NEXT SESSION:
+- Resolve open issues, then /plan FND-001
+
+CONTEXT FOR NEXT SESSION:
+These sessions were not logged at the time; this entry was reconstructed from the commit messages.
+
+Commits: b027296 "docs: add splash/activation screens, logo assets and demo-mode backlog"
+         8f2579c "chore: add Flutter, mobile UX and OWASP mobile skills; ignore .DS_Store"
+================================================================================
+
+================================================================================
+[2026-10-05 21:27] SESSION END
+Feature: — (backlog and issue cleanup before FND-001)
+Task: Resolve ISS-001, ISS-003, ISS-004
+
+COMPLETED:
+- ISS-001 resolved: Settings screen story added to the spec backlog (SET-001)
+  - Track-day switch left out of Settings in Phase 1; UX-001 adds it in Phase 2
+  - Demo mode moved to Phase 1 for rapid testing: LIC-006 and EXT-011, both Should;
+    app and Drupal demo-mode rows added to the spec backlog
+- ISS-003 resolved: spelled-out counts (endpoints, screens, stories, epics) removed
+  from the spec instead of corrected; the tables are the source
+- ISS-004 resolved: research pass on every app package (pub.dev + official docs)
+  - Kept: Flutter 3.47, Riverpod 3, go_router 18, dio 5, flutter_secure_storage 11
+  - SQLCipher -> SQLite3 Multiple Ciphers (sqlcipher_flutter_libs is end-of-life;
+    sqlite3 3.x selects the engine with a hooks user_defines entry in pubspec.yaml)
+  - youtube_player_flutter -> youtube_player_iframe 6.x (origin parameter fixes
+    YouTube errors 152/153; loadVideoById supports start/end seconds)
+- Backfilled the unlogged 2026-10-04 session above
+
+IN PROGRESS:
+- Nothing
+
+TESTS: n/a (no code yet)
+
+DECISIONS: DEC-010 — app stack verified and pinned; supersedes DEC-002
+
+FILES CHANGED:
+M docs/specs/Track Guide – Project & Implementation Plan.md
+M docs/ARCHITECTURE.md
+M docs/database/mobile-erd.md
+M CLAUDE.md
+M .claude/memory/features.json
+M .claude/memory/decisions.md
+M .claude/memory/issues.md
+M .claude/memory/progress.log
+
+BLOCKERS:
+- None for FND-001
+- Open: ISS-002 (iOS CI runner), ISS-005 (Node.js missing, MCP servers down), ISS-006 (logo SVGs)
+
+NEXT SESSION:
+- /plan FND-001 (Flutter project scaffold); pin exact versions from DEC-010 in pubspec.yaml
+- During FND-004: confirm the flutter_secure_storage iOS option matching whenUnlockedThisDeviceOnly
+- Narrow ISS-005 to the MCP servers (skills are now in the repo)
+- Open Apple Developer and Google Play accounts if not done yet
+
+CONTEXT FOR NEXT SESSION:
+- Phase 1 now includes demo mode, which needs EXT-011 in the Drupal repo before the pilot
+- Flutter plans to move Material and Cupertino into separate packages; stay on 3.47.x
+  through the pilot (DEC-010)
+- Docs convention: never state table row counts in prose (ISS-003)
+- Earliest pilot candidate is 17 Oct 2026 with no app code yet; Eefde 28 Nov or
+  Lelystad 12 Dec are more realistic
+
+Commits: a9dbe5c "docs: add Settings and demo-mode stories to backlog, resolve ISS-001"
+         ffe2582 "docs: drop spelled-out counts from spec, resolve ISS-003"
+         f1cf095 "docs: verify app stack, add DEC-010 superseding DEC-002, resolve ISS-004"
+================================================================================

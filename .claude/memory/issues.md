@@ -53,20 +53,6 @@ DST-001 includes a minimal macOS runner workflow for iOS builds; OPS-001 extends
 
 ---
 
-### ISS-004: App package choices not verified as current
-**Reported:** 2026-10-02
-**Status:** Open
-**Severity:** Medium
-**Related Feature:** FND-001, FND-004, VID-001
-
-**Symptoms:**
-- DEC-002 records the spec's package choices (Riverpod, go_router, drift + SQLCipher, dio, youtube_player_flutter, flutter_secure_storage) without checking current versions or maintenance status, as CLAUDE.md requires.
-
-**Resolution:**
-Research each package during `/plan` for FND-001 before adding dependencies. Supersede DEC-002 if anything changes.
-
----
-
 ### ISS-005: Node.js not installed on the development machine
 **Reported:** 2026-10-02
 **Status:** Open
@@ -101,6 +87,20 @@ Pending: the project owner is creating a separate SVG per variant. FND-001 needs
 ---
 
 ## Resolved Issues
+
+### ISS-004: App package choices not verified as current
+**Reported:** 2026-10-02
+**Status:** Resolved (2026-10-05)
+**Severity:** Medium
+**Related Feature:** FND-001, FND-004, VID-001
+
+**Symptoms:**
+- DEC-002 records the spec's package choices (Riverpod, go_router, drift + SQLCipher, dio, youtube_player_flutter, flutter_secure_storage) without checking current versions or maintenance status, as CLAUDE.md requires.
+
+**Resolution:**
+Researched each package on 2026-10-05. Kept Flutter (3.47), Riverpod (3), go_router, dio and flutter_secure_storage. Replaced SQLCipher with SQLite3 Multiple Ciphers (`sqlcipher_flutter_libs` is end-of-life) and youtube_player_flutter with youtube_player_iframe (needed for the `origin` fix to YouTube errors 152/153). Recorded as DEC-010, which supersedes DEC-002; spec, ERD, ARCHITECTURE.md, CLAUDE.md and features.json updated.
+
+---
 
 ### ISS-003: Inconsistent counts in the spec
 **Reported:** 2026-10-02

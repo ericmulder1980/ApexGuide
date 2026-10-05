@@ -24,7 +24,7 @@ The app is offline-first. It only reaches the internet for activation, the daily
 flowchart TB
     UI[Screens and widgets<br/>go_router] --> State[Riverpod providers]
     State --> Repo[Repositories]
-    Repo --> DB[(drift + SQLCipher)]
+    Repo --> DB[(drift + SQLite3 Multiple Ciphers)]
     Repo --> Files[Encrypted image files]
     Sync[Sync engine] --> Api[API client<br/>dio]
     Sync --> Repo
@@ -76,7 +76,7 @@ See `.claude/memory/decisions.md`:
 | ID | Decision |
 | --- | --- |
 | DEC-001 | Flutter app only in this repo; Drupal is external |
-| DEC-002 | App technology stack |
+| DEC-002 | App technology stack (superseded by DEC-010) |
 | DEC-003 | Build against a mock API from the frozen contract |
 | DEC-004 | License model: 7-day JWT bound to one installation |
 | DEC-005 | Content protection layers |
@@ -84,3 +84,4 @@ See `.claude/memory/decisions.md`:
 | DEC-007 | Claude Design prototype is the visual source of truth |
 | DEC-008 | Local database schema |
 | DEC-009 | Demo mode via a server-side demo tenant and shared demo key |
+| DEC-010 | App stack verified and pinned: SQLite3 Multiple Ciphers and youtube_player_iframe |

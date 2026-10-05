@@ -71,27 +71,6 @@ The spec selects Flutter (R-01). A single codebase suits a solo developer, and s
 
 ---
 
-### DEC-002: App technology stack
-**Date:** 2026-10-02
-**Status:** Accepted
-**Deciders:** Project owner (from spec)
-**Related:** FND-001 – FND-006, PRT-001, PRT-002, VID-001
-
-**Context:**
-The spec's Solution architecture section fixes the app libraries.
-
-**Decision:**
-Flutter 3, Riverpod (state), go_router (navigation), drift over SQLCipher (storage), dio (HTTP), youtube_player_flutter (video), flutter_secure_storage (keys), plus two platform channels: Android FLAG_SECURE and the iOS secure text layer.
-
-**Rationale:**
-These are the spec's choices. They are recorded as given, and their versions and maintenance status have not been verified yet (see ISS-004).
-
-**Consequences:**
-- Package currency must be verified during `/plan` for FND-001 before adding dependencies
-- If a package turns out to be unmaintained, a new decision supersedes this one
-
----
-
 ### DEC-003: Build the app against a mock API from the frozen contract
 **Date:** 2026-10-02
 **Status:** Accepted
@@ -237,6 +216,67 @@ The activation screen in the prototype (3a) offers "Continue in demo mode" for d
 
 ---
 
+### DEC-010: App stack verified and pinned
+**Date:** 2026-10-05
+**Status:** Accepted
+**Deciders:** Project owner
+**Related:** Supersedes DEC-002; resolves ISS-004; FND-001, FND-004, VID-001
+
+**Context:**
+DEC-002 recorded the spec's package choices without checking them (ISS-004). A research pass on pub.dev and the official docs on 2026-10-05 found two problems: `sqlcipher_flutter_libs` is end-of-life, and YouTube has refused unidentified embeds since August 2025 (errors 152/153).
+
+**Decision:**
+| Area | Package | Version at decision |
+| --- | --- | --- |
+| Framework | Flutter (Dart 3.13) | 3.47.x |
+| State | flutter_riverpod | 3.x (3.4.3) |
+| Navigation | go_router | 18.x (18.0.2) |
+| Storage | drift over sqlite3 with source `sqlite3mc` (SQLite3 Multiple Ciphers) | drift 2.35.1, sqlite3 3.7.0 |
+| HTTP | dio | 5.x (5.11.1) |
+| Video | youtube_player_iframe, behind our own player widget, with the `origin` parameter set | 6.x (6.0.2) |
+| Keys | flutter_secure_storage | 11.x (11.2.0) |
+
+Plus the two platform channels from DEC-005: Android FLAG_SECURE and the iOS secure text layer.
+
+**Rationale:**
+- `sqlcipher_flutter_libs` is end-of-life (`0.7.0+eol`); `package:sqlite3` 3.x now selects the engine with a `hooks: user_defines: sqlite3: source:` entry in `pubspec.yaml`. drift's encryption docs recommend SQLite3 Multiple Ciphers: MIT licensed, actively maintained, current SQLite. The SQLCipher build can lag behind on SQLite version and pulls in OpenSSL on Android. No existing encrypted databases need SQLCipher's file format.
+- youtube_player_flutter 10.x is a thin wrapper over youtube_player_iframe. Using the iframe package directly exposes `origin` (needed to avoid errors 152/153) and `loadVideoById(startSeconds, endSeconds)`, which VID-001 needs for corner markers. A wrapper widget keeps future YouTube changes to one file.
+- Riverpod 3 from the start avoids a 2.x to 3.x migration later.
+- go_router is feature-complete (bug fixes only by the Flutter team), which suits our small route tree.
+
+**Alternatives considered:**
+- SQLCipher via the `sqlcipher` hook source: still supported, but an older SQLite and an OpenSSL dependency on Android
+- youtube_player_flutter: works, but adds a layer over the same package
+
+**Consequences:**
+- The database key is still per install, in Android Keystore / iOS Keychain (`whenUnlockedThisDeviceOnly`); confirm the matching flutter_secure_storage iOS accessibility option during FND-004
+- flutter_secure_storage 10+ requires Android 6.0 (API 23) as minimum
+- Flutter plans to move Material and Cupertino out of the core into separate packages; stay on 3.47.x through the pilot and plan the migration afterwards
+- Pin exact versions in `pubspec.yaml` during FND-001; this table records the versions current at decision time
+
+---
+
 ## Superseded/Deprecated Decisions
 
 *Decisions that have been replaced or are no longer relevant go here for historical reference.*
+
+### DEC-002: App technology stack
+**Date:** 2026-10-02
+**Status:** Superseded by DEC-010 (2026-10-05)
+**Deciders:** Project owner (from spec)
+**Related:** FND-001 – FND-006, PRT-001, PRT-002, VID-001
+
+**Context:**
+The spec's Solution architecture section fixes the app libraries.
+
+**Decision:**
+Flutter 3, Riverpod (state), go_router (navigation), drift over SQLCipher (storage), dio (HTTP), youtube_player_flutter (video), flutter_secure_storage (keys), plus two platform channels: Android FLAG_SECURE and the iOS secure text layer.
+
+**Rationale:**
+These are the spec's choices. They are recorded as given, and their versions and maintenance status have not been verified yet (see ISS-004).
+
+**Consequences:**
+- Package currency must be verified during `/plan` for FND-001 before adding dependencies
+- If a package turns out to be unmaintained, a new decision supersedes this one
+
+---

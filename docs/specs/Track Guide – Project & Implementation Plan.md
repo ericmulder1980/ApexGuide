@@ -72,7 +72,7 @@ Nothing below is built in v1, but the data model and API leave room for each ite
 
 Coaches work in Drupal; the app pulls everything through the `trackguide` API with a tenant-scoped JWT, stores it encrypted, and only reaches the internet for the daily license check, sync, feedback and YouTube playback.
 
-Stack choices: Flutter 3 with Riverpod for state, go\_router for navigation, drift over SQLCipher for storage, dio for HTTP, youtube\_player\_flutter for video, flutter\_secure\_storage for keys, and two small platform channels for FLAG\_SECURE and the iOS secure layer. Drupal 11 on PHP 8.3 with MariaDB, behind HTTPS on a managed host.
+Stack choices: Flutter 3.47 with Riverpod 3 for state, go\_router for navigation, drift over SQLite3 Multiple Ciphers for storage, dio for HTTP, youtube\_player\_iframe for video, flutter\_secure\_storage for keys, and two small platform channels for FLAG\_SECURE and the iOS secure layer. Drupal 11 on PHP 8.3 with MariaDB, behind HTTPS on a managed host.
 
 ## Data model
 
@@ -172,7 +172,7 @@ The corner text is the asset; it is blocked from capture on Android, hidden from
 | --- | --- | --- |
 | Screenshots and recording | `FLAG_SECURE` on the main activity, set at start-up, covers every screen | Corner text rendered in a native `UITextField` with `isSecureTextEntry` as its layer host, embedded through a platform view; captures show the text area blank |
 | Text selection and copy | Flutter `SelectionContainer.disabled` around content; no share or copy actions | Same, plus the secure layer never exposes a selection |
-| Storage | Encrypted SQLite (drift with SQLCipher); key generated per install and stored in Android Keystore | Same database; key in the Keychain with `whenUnlockedThisDeviceOnly` |
+| Storage | Encrypted SQLite (drift with SQLite3 Multiple Ciphers); key generated per install and stored in Android Keystore | Same database; key in the Keychain with `whenUnlockedThisDeviceOnly` |
 | Images | Written to the app sandbox encrypted with the same key; decrypted into memory on view | Same |
 | Transport | TLS only; license token in the Authorization header; media only via the tenant-checked endpoint | Same |
 | Wipe | Delete the database, image folder, Keystore key and shared preferences, keep only the installation id, then restart to the key entry screen | Same via Keychain |

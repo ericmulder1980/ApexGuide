@@ -2,7 +2,7 @@
 
 Status: **Proposal**, not implemented yet. Based on `docs/specs/Track Guide – Project & Implementation Plan.md` (Data model, API contract, Content protection).
 
-Engine: SQLite encrypted with SQLCipher, accessed through drift. The database key is generated per install and stored in Android Keystore / iOS Keychain.
+Engine: SQLite encrypted with SQLite3 Multiple Ciphers, accessed through drift (DEC-010). The database key is generated per install and stored in Android Keystore / iOS Keychain.
 
 ---
 

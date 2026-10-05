@@ -10,12 +10,12 @@
     "design_reference": "reference/prototype/track-guide-ui-designs/project/ApexGuide Screens.dc.html",
     "erd": "docs/database/mobile-erd.md",
     "tech_stack": [
-      "Flutter 3",
-      "Riverpod",
+      "Flutter 3.47",
+      "Riverpod 3",
       "go_router",
-      "drift + SQLCipher",
+      "drift + SQLite3 Multiple Ciphers",
       "dio",
-      "youtube_player_flutter",
+      "youtube_player_iframe",
       "flutter_secure_storage",
       "Platform channels: Android FLAG_SECURE, iOS secure text layer"
     ],
@@ -95,7 +95,7 @@
     {
       "id": "FND-004",
       "title": "Encrypted local database",
-      "description": "drift over SQLCipher implementing the schema in docs/database/mobile-erd.md. Database key generated per install, stored in Android Keystore / iOS Keychain (whenUnlockedThisDeviceOnly).",
+      "description": "drift over SQLite3 Multiple Ciphers (DEC-010) implementing the schema in docs/database/mobile-erd.md. Database key generated per install, stored in Android Keystore / iOS Keychain (whenUnlockedThisDeviceOnly).",
       "release_phase": 1,
       "moscow": "Must",
       "priority": "critical",

@@ -85,3 +85,4 @@ See `.claude/memory/decisions.md`:
 | DEC-008 | Local database schema |
 | DEC-009 | Demo mode via a server-side demo tenant and shared demo key |
 | DEC-010 | App stack verified and pinned: SQLite3 Multiple Ciphers and youtube_player_iframe |
+| DEC-011 | Project conventions: app ID, minimum versions, folder layout, lints, build config |

@@ -153,3 +153,32 @@ Commits: a9dbe5c "docs: add Settings and demo-mode stories to backlog, resolve I
          ffe2582 "docs: drop spelled-out counts from spec, resolve ISS-003"
          f1cf095 "docs: verify app stack, add DEC-010 superseding DEC-002, resolve ISS-004"
 ================================================================================
+
+================================================================================
+[2026-10-06 21:57] PLANNING SESSION COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Agent: PLANNER
+
+DELIVERABLES:
+- Created spec: docs/specs/FND-001-spec.md
+- Defined implementation tasks FND-001-T1 to FND-001-T7 in features.json
+- Recorded DEC-011 (project conventions)
+
+READY FOR IMPLEMENTATION:
+- Next task: FND-001-T1 - Development environment (Flutter not installed yet;
+  macOS 12.7.6 Intel; Android SDK folder exists; no Xcode possible)
+- Estimated total effort: 6-9 hours
+
+USER DECISIONS MADE:
+- App ID com.apexguide.app
+- iOS build verification deferred to DST-001 (not a minimal CI build in FND-001)
+- Interim launcher icon from logo_full.svg, cropped to the A mark
+- very_good_analysis for lints
+- Defaults accepted: feature-first folders, Riverpod code generation,
+  --dart-define-from-file config, minimum Android API 24 / iOS 15
+
+OPEN QUESTIONS:
+- Does Android Studio run on macOS 12 Intel, or only the command-line SDK tools? (T1)
+- Does riverpod_lint use custom_lint or the analyzer plugin system now? (T3)
+- Schedule DST-001 directly after FND-001 (first iOS build)
+================================================================================

@@ -1,7 +1,7 @@
 {
   "project": "ApexGuide",
   "version": "0.1.0",
-  "last_updated": "2026-10-05",
+  "last_updated": "2026-10-06",
   "metadata": {
     "created": "2026-10-02",
     "initialized_by": "user",
@@ -20,7 +20,7 @@
       "Platform channels: Android FLAG_SECURE, iOS secure text layer"
     ],
     "repository": "Flutter app only; Drupal central application lives in a separate repository (EXT-* features are tracked here as dependencies, not built here)",
-    "current_feature": null,
+    "current_feature": "FND-001",
     "id_prefixes": {
       "FND": "Foundation",
       "SYN": "Sync",
@@ -48,14 +48,31 @@
       "requirements": ["R-01"],
       "dependencies": [],
       "external_dependencies": [],
-      "lifecycle": { "phase": "inception", "status": "pending" },
+      "decisions": ["DEC-010", "DEC-011"],
+      "lifecycle": { "phase": "planning", "status": "pending" },
+      "planning": { "status": "complete", "spec_file": "docs/specs/FND-001-spec.md", "completed": "2026-10-06" },
       "acceptance_criteria": [
-        "App builds and runs on Android and iOS",
-        "Portrait orientation locked",
-        "go_router routes exist for activation, first sync, track list, track, corner, settings and locked screens (placeholders)",
-        "Lints and `flutter test` run clean",
-        "Launcher icons generated from the ApexGuide app icon (app_icon, 1024 × 1024; see ISS-006)"
-      ]
+        "App builds and runs on an Android emulator or device (iOS verification deferred to DST-001, DEC-011)",
+        "Portrait orientation locked in Dart, AndroidManifest.xml and Info.plist",
+        "App ID com.apexguide.app, display name ApexGuide, minimum Android API 24 and iOS 15",
+        "go_router placeholder routes for start, activation, first sync, track list, track, corner, settings and locked",
+        "Riverpod wired with ProviderScope and code generation",
+        "AppConfig read from config/dev.json or config/prod.json via --dart-define-from-file",
+        "flutter analyze (very_good_analysis) and flutter test run clean, with app, router and config tests",
+        "Launcher icons generated from the A mark of logo_full.svg on a square white background (until ISS-006 delivers app_icon)",
+        "Exact versions from DEC-010 pinned for the packages FND-001 adds"
+      ],
+      "implementation": {
+        "tasks": [
+          { "id": "FND-001-T1", "title": "Development environment: Flutter 3.47, Android SDK and emulator, flutter doctor green for Android", "estimate": "M", "depends_on": [], "status": "pending" },
+          { "id": "FND-001-T2", "title": "Create the project: app ID, display name, minimum versions, portrait lock", "estimate": "S", "depends_on": ["FND-001-T1"], "status": "pending" },
+          { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
+          { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "pending" },
+          { "id": "FND-001-T5", "title": "go_router provider, route constants and placeholder screens with router tests", "estimate": "M", "depends_on": ["FND-001-T4"], "status": "pending" },
+          { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
+          { "id": "FND-001-T7", "title": "Wrap-up: README commands, full analyze and test run, emulator smoke test, memory update", "estimate": "S", "depends_on": ["FND-001-T5", "FND-001-T6"], "status": "pending" }
+        ]
+      }
     },
     {
       "id": "FND-002",
@@ -461,7 +478,7 @@
     {
       "id": "DST-001",
       "title": "Pilot builds: signed APK and TestFlight",
-      "description": "Signed Android APK shared by link; iOS built and uploaded to TestFlight via a GitHub Actions macOS runner (the 2016 MacBook Pro cannot run Xcode 26).",
+      "description": "Signed Android APK shared by link; iOS built and uploaded to TestFlight via a GitHub Actions macOS runner (the 2016 MacBook Pro cannot run Xcode 26). Schedule directly after FND-001: it is the first iOS build (DEC-011).",
       "release_phase": 1,
       "moscow": "Must",
       "priority": "high",

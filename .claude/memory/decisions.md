@@ -256,6 +256,42 @@ Plus the two platform channels from DEC-005: Android FLAG_SECURE and the iOS sec
 
 ---
 
+### DEC-011: Project conventions for the Flutter app
+**Date:** 2026-10-06
+**Status:** Accepted
+**Deciders:** Project owner
+**Related:** FND-001, DST-001, DEC-006, DEC-010, ISS-006; spec `docs/specs/FND-001-spec.md`
+
+**Context:**
+FND-001 creates the Flutter project. Several choices are hard to change later (the app ID is permanent once published) or shape every later feature (folder layout, state management style, lints).
+
+**Decision:**
+1. App ID `com.apexguide.app` on Android and iOS; display name "ApexGuide"
+2. Minimum Android API 24 and iOS 15, the current floor of Flutter's supported platforms
+3. Feature-first folders: `lib/app/`, `lib/core/`, `lib/features/<feature>/{data,domain,presentation}`
+4. Riverpod with code generation (`@riverpod`, riverpod_generator, build_runner)
+5. very_good_analysis for lints, plus riverpod_lint
+6. Build configuration through `--dart-define-from-file` with `config/dev.json` and `config/prod.json`; no secrets in these files
+7. iOS build verification is deferred to DST-001; FND-001 proves Android only
+8. Interim launcher icon: the "A" mark cropped from `logo_full.svg` on a square white background, until ISS-006 delivers `app_icon`
+
+**Rationale:**
+- drift already needs build_runner, so Riverpod code generation adds little cost and catches provider mistakes at build time
+- very_good_analysis enforces explicit types, matching the project rule
+- The demo key (LIC-006) and the mock/real API switch (DEC-003) both need build-time configuration
+- The full logo's wordmark is illegible at launcher size, and store guidelines discourage text in icons
+
+**Alternatives considered:**
+- flutter_lints: lighter, less enforcement
+- Manual Riverpod providers: no code generation, but more boilerplate and fewer build-time checks
+- Minimal iOS CI build in FND-001: rejected by the owner; iOS waits for DST-001
+
+**Consequences:**
+- iOS-specific problems (CocoaPods, the SQLite3 Multiple Ciphers native build, PRT-002) surface at DST-001, so DST-001 should be scheduled directly after FND-001
+- Devices below Android 7.0 or iOS 15 cannot install the app
+
+---
+
 ## Superseded/Deprecated Decisions
 
 *Decisions that have been replaced or are no longer relevant go here for historical reference.*

@@ -383,3 +383,45 @@ TESTS: 20/20 passing (no code changes)
 NEXT: FND-001-T7 - wrap-up: README commands, full analyze and test run, emulator smoke
   test, memory update
 ================================================================================
+
+================================================================================
+[2026-10-07 15:55] SESSION END
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T7 - Wrap-up (T1-T7 complete; feature moved to review)
+
+COMPLETED:
+- README.md rewritten for ApexGuide (requirements, commands, layout, doc links); the
+  boilerplate README moved unchanged to docs/boilerplate/README.md with fixed links
+  (owner choice)
+- Full run: dart format clean, flutter analyze clean, flutter test 20/20
+- Emulator smoke test of every route via `am start --es route <path>`: all eight
+  routes, path parameters (Track eefde, corner 3) and both error cases render; no
+  Flutter errors in logcat
+- FND-001 spec acceptance criteria ticked, status "Implemented, awaiting review";
+  features.json FND-001 lifecycle review/pending
+
+TESTS: 20/20 passing
+
+COMMITS THIS SESSION: 50a6c38 (T1 docs), 6684477 (T2), 676a471 (T3), 198b07d (T4),
+  f6d40ba (T5), 9d87a4e (T6), T7 pending
+
+DECISIONS: DEC-012 (Flutter 3.38.10 pin); DEC-011 item 9 (iPhone only)
+ISSUES: ISS-007 (macOS 14 / emulator), ISS-008 (domain and app ID), ISS-006 narrowed
+
+NEXT SESSION:
+- /review for FND-001 (guardians), then merge feature/FND-001 into main
+- DST-001 directly after FND-001: first iOS build on GitHub Actions; confirm Flutter
+  3.38.10 builds with the runner's Xcode and meets the App Store SDK requirement
+- Owner: decide the domain and confirm the app ID before DST-001 (ISS-008); plan
+  macOS 14+ hardware (ISS-007)
+- License settled (DEC-013): proprietary, (c) 2026 WebMiller; boilerplate GPL v3 moved
+  to docs/boilerplate/LICENSE; SET-001 gains an open-source licenses entry
+  (showLicensePage). Check the license of every new package before adding it
+
+CONTEXT FOR NEXT SESSION:
+- Android's FlutterActivity accepts an initial route through the `route` intent extra,
+  and go_router honours it, so any app can open a deep route. LIC-003's redirect must
+  also guard the initial location (go_router runs redirect for it)
+- Emulator: cold boot needs minutes to settle; debug cold start ~20-50 s
+- Regenerating launcher icons needs `git checkout -- ios/Runner.xcodeproj/project.pbxproj`
+================================================================================

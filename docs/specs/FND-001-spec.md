@@ -10,15 +10,15 @@ Create the ApexGuide Flutter project that every later feature builds on: an Andr
 
 ## Acceptance Criteria
 
-- [ ] App builds and runs on an Android emulator or device
-- [ ] Portrait orientation locked in Dart, `AndroidManifest.xml` and `Info.plist`
-- [ ] App ID `com.apexguide.app` on both platforms; display name "ApexGuide"; minimum Android API 24 and iOS 15
-- [ ] go_router placeholder routes for start, activation, first sync, track list, track, corner, settings and locked
-- [ ] Riverpod wired with a `ProviderScope` at the root and code generation through `build_runner`
-- [ ] `AppConfig` read from `config/dev.json` or `config/prod.json` via `--dart-define-from-file`
-- [ ] `flutter analyze` (very_good_analysis) and `flutter test` run clean, with app, router and config tests
-- [ ] Launcher icons generated from the "A" mark of `logo_full.svg`, on a square white background (Android adaptive icon and iOS)
-- [ ] Exact versions from DEC-010 pinned for the packages FND-001 adds
+- [x] App builds and runs on an Android emulator or device
+- [x] Portrait orientation locked in Dart, `AndroidManifest.xml` and `Info.plist`
+- [x] App ID `com.apexguide.app` on both platforms; display name "ApexGuide"; minimum Android API 24 and iOS 15 (iOS configured, first build in DST-001)
+- [x] go_router placeholder routes for start, activation, first sync, track list, track, corner, settings and locked
+- [x] Riverpod wired with a `ProviderScope` at the root and code generation through `build_runner`
+- [x] `AppConfig` read from `config/dev.json` or `config/prod.json` via `--dart-define-from-file`
+- [x] `flutter analyze` (very_good_analysis) and `flutter test` run clean, with app, router and config tests
+- [x] Launcher icons generated from the "A" mark of `logo_full.svg`, on a square white background (Android adaptive icon and iOS)
+- [x] Exact versions from DEC-010, as amended by DEC-012, pinned for the packages FND-001 adds
 
 ## Scope
 
@@ -205,4 +205,4 @@ Recorded as DEC-011: app ID, minimum versions, folder layout, Riverpod code gene
 ---
 Created: 2026-10-06
 Last Updated: 2026-10-07
-Status: Ready for Implementation
+Status: Implemented, awaiting review

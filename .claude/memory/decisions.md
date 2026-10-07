@@ -335,6 +335,29 @@ Versions checked on pub.dev on 2026-10-07; FND-001 pins the exact versions in `p
 - DST-001 must confirm that Flutter 3.38.10 builds with the Xcode on GitHub's macOS runners and meets Apple's current App Store SDK requirement
 - The emulator is slow on this machine: the first boot needs several minutes of background work, and the Android 16 Play Store image was unusable (ISS-007)
 
+### DEC-013: Proprietary license held by WebMiller
+**Date:** 2026-10-07
+**Status:** Accepted
+**Deciders:** Project owner
+**Related:** SET-001, DST-002; `LICENSE`, `docs/boilerplate/LICENSE`
+
+**Context:**
+The repository's `LICENSE` was the GPL v3 file from the Claude Code boilerplate by Songbird Digital, which has no connection to ApexGuide. A check on 2026-10-07 of every package the app bundles (Flutter, Riverpod, go_router and their dependencies) and of the planned ones (drift, sqlite3, SQLite3 Multiple Ciphers, dio, youtube_player_iframe, flutter_secure_storage) found only BSD-3-Clause, MIT and Apache-2.0, plus public-domain SQLite. None requires a particular license for the app; all require keeping their copyright notices.
+
+**Decision:**
+1. ApexGuide is proprietary: "Copyright (c) 2026 WebMiller, the Netherlands. All rights reserved." in the root `LICENSE`
+2. The boilerplate's GPL v3 text moves to `docs/boilerplate/LICENSE` and covers only the boilerplate files (agents, skills, commands and templates in `.claude/`, `.ai/`, `AGENTS.md`, `GEMINI.md`, `SETUP.md`, `TESTING.md`, `CHANGELOG.md`, `docs/boilerplate/`); project content such as `.claude/memory/` is WebMiller's
+3. Third-party notices are shown in the app through Flutter's `showLicensePage`, which lists the LICENSE files the Flutter tool bundles automatically; SET-001 adds the Settings entry
+
+**Rationale:**
+- Permissive licenses allow closed-source commercial use as long as notices are reproduced
+- The boilerplate is development tooling, not part of the shipped app
+
+**Consequences:**
+- Before adding a package, check its license; GPL, LGPL, AGPL or MPL code in the app needs a new decision
+- The end-user terms for the stores are a separate document (DST-002); legal review recommended before the store release
+- Drupal (GPLv2+) runs server-side in a separate repository and does not affect the app's license
+
 ---
 
 ## Superseded/Deprecated Decisions

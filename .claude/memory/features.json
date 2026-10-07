@@ -49,7 +49,7 @@
       "dependencies": [],
       "external_dependencies": [],
       "decisions": ["DEC-010", "DEC-011", "DEC-012"],
-      "lifecycle": { "phase": "implementation", "status": "in_progress", "started": "2026-10-07" },
+      "lifecycle": { "phase": "review", "status": "pending", "started": "2026-10-07", "implementation_completed": "2026-10-07" },
       "planning": { "status": "complete", "spec_file": "docs/specs/FND-001-spec.md", "completed": "2026-10-06" },
       "acceptance_criteria": [
         "App builds and runs on an Android emulator or device (iOS verification deferred to DST-001, DEC-011)",
@@ -70,7 +70,7 @@
           { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T5", "title": "go_router provider, route constants and placeholder screens with router tests", "estimate": "M", "depends_on": ["FND-001-T4"], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "complete", "completed": "2026-10-07" },
-          { "id": "FND-001-T7", "title": "Wrap-up: README commands, full analyze and test run, emulator smoke test, memory update", "estimate": "S", "depends_on": ["FND-001-T5", "FND-001-T6"], "status": "pending" }
+          { "id": "FND-001-T7", "title": "Wrap-up: README commands, full analyze and test run, emulator smoke test, memory update", "estimate": "S", "depends_on": ["FND-001-T5", "FND-001-T6"], "status": "complete", "completed": "2026-10-07" }
         ]
       }
     },
@@ -472,7 +472,8 @@
         "Theme and language overrides take effect immediately",
         "License status and next check shown",
         "Wipe and re-activate asks for confirmation",
-        "No track-day mode switch until UX-001 ships"
+        "No track-day mode switch until UX-001 ships",
+        "Open-source licenses entry opens showLicensePage with the app name and version (DEC-013)"
       ]
     },
     {

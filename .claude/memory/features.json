@@ -66,7 +66,7 @@
         "tasks": [
           { "id": "FND-001-T1", "title": "Development environment: Flutter 3.38.10 (DEC-012), Android SDK and emulator, flutter doctor green for Android", "estimate": "M", "depends_on": [], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T2", "title": "Create the project: app ID, display name, minimum versions, portrait lock", "estimate": "S", "depends_on": ["FND-001-T1"], "status": "complete", "completed": "2026-10-07" },
-          { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
+          { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "pending" },
           { "id": "FND-001-T5", "title": "go_router provider, route constants and placeholder screens with router tests", "estimate": "M", "depends_on": ["FND-001-T4"], "status": "pending" },
           { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },

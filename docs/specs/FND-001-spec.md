@@ -104,7 +104,7 @@ LIC-006 adds the demo key here later. These files hold no secrets; signing keys 
 | riverpod_generator | dev | 4.0.4, pinned at T4 |
 | build_runner | dev | 2.15.1, pinned at T4 |
 | very_good_analysis | dev | 10.1.0 (DEC-012), pinned at T3 |
-| riverpod_lint | dev | 3.1.4, pinned at T3; check whether it needs custom_lint or the analyzer plugin system |
+| riverpod_lint | analyzer plugin | 3.1.4, under `plugins:` in `analysis_options.yaml` (not a dev dependency) |
 | flutter_launcher_icons | dev | 0.14.x, pinned at T6 |
 
 These are the newest versions that support Dart 3.10, checked on 2026-10-07. Other DEC-010 packages are added by the features that need them.
@@ -200,7 +200,7 @@ Recorded as DEC-011: app ID, minimum versions, folder layout, Riverpod code gene
 ## Open Questions
 
 - ~~Does Android Studio, or only the command-line SDK tools, run on macOS 12 Intel? (T1)~~ Command-line tools only; see `docs/DEVELOPMENT.md`
-- Does riverpod_lint use custom_lint or the analyzer plugin system in its current version? (T3)
+- ~~Does riverpod_lint use custom_lint or the analyzer plugin system in its current version? (T3)~~ Analyzer plugin system (`analysis_server_plugin`); ignore comments need the prefix, e.g. `// ignore: riverpod_lint/missing_provider_scope`
 
 ---
 Created: 2026-10-06

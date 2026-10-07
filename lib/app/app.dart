@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Root widget. FND-001-T5 replaces the placeholder home with go_router.
 class ApexGuideApp extends StatelessWidget {
+  /// Creates the root widget.
   const ApexGuideApp({super.key});
 
   @override

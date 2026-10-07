@@ -274,6 +274,7 @@ FND-001 creates the Flutter project. Several choices are hard to change later (t
 6. Build configuration through `--dart-define-from-file` with `config/dev.json` and `config/prod.json`; no secrets in these files
 7. iOS build verification is deferred to DST-001; FND-001 proves Android only
 8. Interim launcher icon: the "A" mark cropped from `logo_full.svg` on a square white background, until ISS-006 delivers `app_icon`
+9. iPhone only on iOS (`TARGETED_DEVICE_FAMILY = 1`); no iPad build (added 2026-10-07)
 
 **Rationale:**
 - drift already needs build_runner, so Riverpod code generation adds little cost and catches provider mistakes at build time
@@ -289,6 +290,7 @@ FND-001 creates the Flutter project. Several choices are hard to change later (t
 **Consequences:**
 - iOS-specific problems (CocoaPods, the SQLite3 Multiple Ciphers native build, PRT-002) surface at DST-001, so DST-001 should be scheduled directly after FND-001
 - Devices below Android 7.0 or iOS 15 cannot install the app
+- iPads can still run the iPhone app in compatibility mode; a portrait-only iPad build would have needed all orientations or full-screen mode for iPad multitasking
 
 ---
 

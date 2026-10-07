@@ -240,3 +240,35 @@ CONTEXT FOR NEXT SESSION:
 
 Commit: (pending owner approval)
 ================================================================================
+
+================================================================================
+[2026-10-07 15:05] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T2 - Create the project
+
+COMPLETED:
+- flutter create (Flutter 3.38.10) generated in the scratchpad and copied in, so
+  README.md and the boilerplate files were not touched; Flutter's .gitignore merged
+  into the root .gitignore
+- App ID com.apexguide.app (Android applicationId + namespace, MainActivity moved to
+  com/apexguide/app; iOS bundle ID, RunnerTests com.apexguide.app.RunnerTests)
+- Display name ApexGuide (Android label, CFBundleDisplayName, CFBundleName)
+- minSdk 24; iOS deployment target 15.0 (pbxproj and AppFrameworkInfo.plist)
+- Portrait lock: SystemChrome in lib/main.dart (lockPortrait), android:screenOrientation
+  on MainActivity, portrait-only orientations in Info.plist (iPhone and iPad)
+- lib/app/app.dart: placeholder ApexGuideApp (T5 replaces with go_router)
+- test/app_test.dart replaces the counter test: renders home; lockPortrait sends
+  portraitUp only
+
+TESTS: 2/2 passing; flutter analyze clean (flutter_lints until T3)
+VERIFIED ON EMULATOR: aapt2 badging shows com.apexguide.app, label ApexGuide, minSdk 24;
+  app stays ROTATION_0 with landscape forced, while Settings rotates to 90 (control)
+
+NOTES:
+- Incremental debug build ~80 s; debug cold start on the emulator ~54 s
+- Owner decision: iPhone only (TARGETED_DEVICE_FAMILY = 1, iPad orientation key
+  removed), recorded as DEC-011 item 9
+
+NEXT: FND-001-T3 - very_good_analysis 10.1.0 + riverpod_lint 3.1.4 (custom_lint vs
+  analyzer plugin question)
+================================================================================

@@ -1,8 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Activation, sync, feedback and YouTube playback. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- No backup or device transfer: the license is bound to one installation
+         (DEC-004) and the database key stays in the Keystore. -->
     <application
         android:label="ApexGuide"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:exported="true"

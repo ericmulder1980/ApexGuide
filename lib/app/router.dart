@@ -13,7 +13,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router.g.dart';
 
-/// The app's router. LIC-003 adds a `redirect` driven by license state here.
+/// The app's router, built once for the app's lifetime.
+///
+/// LIC-003 adds license gating here. Do not `ref.watch` license state in this
+/// provider: that rebuilds the GoRouter and resets navigation. Instead:
+/// - `ref.listen` to license state and bump a `ValueNotifier` passed as
+///   `refreshListenable` (dispose it with `ref.onDispose`);
+/// - read license state with `ref.read` inside `redirect`;
+/// - deny by default: only start, activation and locked are open without a
+///   valid license. `redirect` also runs for the initial location, which on
+///   Android any app can choose through the `route` intent extra.
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   final router = GoRouter(
@@ -42,14 +51,14 @@ GoRouter router(Ref ref) {
         builder: (context, state) => const TrackListScreen(),
         routes: [
           GoRoute(
-            path: Routes.track,
+            path: Routes.trackSegment,
             name: RouteNames.track,
             builder: (context, state) => TrackScreen(
               trackId: state.pathParameters[Routes.trackIdParam]!,
             ),
             routes: [
               GoRoute(
-                path: Routes.corner,
+                path: Routes.cornerSegment,
                 name: RouteNames.corner,
                 builder: (context, state) {
                   final cornerNo = int.tryParse(

@@ -96,3 +96,18 @@ flutter doctor -v
 Expected: Flutter and Android toolchain pass with all Android licenses accepted. Xcode and CocoaPods fail on macOS 12; that is expected.
 
 The first `flutter build apk` or `flutter run` takes about 8 minutes because Gradle downloads its dependencies, the NDK and CMake. Later builds are much faster.
+
+---
+
+## Android release signing
+
+Release builds are signed with the upload key from `android/key.properties`. Without that file, `flutter build apk --release` and `flutter build appbundle` stop with "Release signing needs android/key.properties"; they never fall back to the public debug key. `key.properties`, `*.jks` and `*.keystore` are git-ignored; keep the keystore outside the repository and in CI secrets.
+
+```properties
+storePassword=<store password>
+keyPassword=<key password>
+keyAlias=upload
+storeFile=/absolute/path/to/upload-keystore.jks
+```
+
+DST-001 creates the upload key and sets up Play App Signing.

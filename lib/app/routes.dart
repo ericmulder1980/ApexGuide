@@ -13,11 +13,16 @@ abstract final class Routes {
   /// List of the tenant's tracks.
   static const trackList = '/tracks';
 
-  /// One track, relative to [trackList].
-  static const track = ':$trackIdParam';
+  /// Route pattern for one track, relative to [trackList]. Not a location:
+  /// navigate with [trackLocation].
+  static const trackSegment = ':$trackIdParam';
 
-  /// One corner, relative to [track].
-  static const corner = 'corners/:$cornerNoParam';
+  /// Path segment that groups a track's corners.
+  static const cornersSegment = 'corners';
+
+  /// Route pattern for one corner, relative to [trackSegment]. Not a
+  /// location: navigate with [cornerLocation].
+  static const cornerSegment = '$cornersSegment/:$cornerNoParam';
 
   /// App settings.
   static const settings = '/settings';
@@ -36,7 +41,7 @@ abstract final class Routes {
 
   /// Location of corner [cornerNo] of the track with [trackId].
   static String cornerLocation(String trackId, int cornerNo) =>
-      '${trackLocation(trackId)}/corners/$cornerNo';
+      '${trackLocation(trackId)}/$cornersSegment/$cornerNo';
 }
 
 /// Route names, for `context.goNamed`.
@@ -53,10 +58,10 @@ abstract final class RouteNames {
   /// Name of [Routes.trackList].
   static const trackList = 'trackList';
 
-  /// Name of [Routes.track].
+  /// Name of [Routes.trackSegment].
   static const track = 'track';
 
-  /// Name of [Routes.corner].
+  /// Name of [Routes.cornerSegment].
   static const corner = 'corner';
 
   /// Name of [Routes.settings].

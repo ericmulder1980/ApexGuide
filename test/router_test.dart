@@ -67,6 +67,30 @@ void main() {
     });
   });
 
+  group('location helpers match the route table', () {
+    test('trackLocation and cornerLocation equal the named locations', () {
+      final router = ProviderContainer.test().read(routerProvider);
+
+      expect(
+        router.namedLocation(
+          RouteNames.track,
+          pathParameters: {Routes.trackIdParam: 'eefde'},
+        ),
+        Routes.trackLocation('eefde'),
+      );
+      expect(
+        router.namedLocation(
+          RouteNames.corner,
+          pathParameters: {
+            Routes.trackIdParam: 'eefde',
+            Routes.cornerNoParam: '3',
+          },
+        ),
+        Routes.cornerLocation('eefde', 3),
+      );
+    });
+  });
+
   group('errors', () {
     testWidgets('unknown path shows the error screen', (tester) async {
       await _pumpAt(tester, '/does-not-exist');

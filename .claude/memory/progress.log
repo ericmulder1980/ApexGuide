@@ -425,3 +425,43 @@ CONTEXT FOR NEXT SESSION:
 - Emulator: cold boot needs minutes to settle; debug cold start ~20-50 s
 - Regenerating launcher icons needs `git checkout -- ios/Runner.xcodeproj/project.pbxproj`
 ================================================================================
+
+================================================================================
+[2026-10-07 21:50] CODE REVIEW COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Agent: REVIEWER
+
+RESULT: APPROVED after fixes (owner chose option A)
+Review restarted once because of connectivity problems; results below are from the rerun.
+
+AUTOMATED: format clean; flutter analyze clean; 21/21 tests target (20 + new helper test),
+  94.6% coverage excl. generated; generated files current; no discontinued packages
+
+GUARDIANS (architecture, test, security, docs):
+- Architecture 0/0/3/5, Security 0/2/2/6, Test 0/0/4/3 (2 rejected), Docs clean
+- Rejected: config_test cwd fragility (flutter test runs from the package root);
+  prod.json empty URL (intended, ISS-008). Earlier run's ProviderContainer disposal
+  finding was false: ProviderContainer.test registers addTearDown(dispose)
+
+FIXED BEFORE MERGE:
+- Release signing from android/key.properties; Gradle refuses release apk/bundle without
+  it (verified: assembleRelease/bundleRelease refused, debug fine, throwaway keystore
+  passes validateSigningRelease)
+- allowBackup=false + data_extraction_rules.xml (cloud backup and device transfer)
+- INTERNET permission in the main manifest
+- Routes.trackSegment / cornersSegment / cornerSegment; test that location helpers equal
+  router.namedLocation
+- router.dart doc comment: LIC-003 refresh/redirect pattern, deny-by-default, initial route
+- .gitignore: signing and credential files; docs/DEVELOPMENT.md release signing section
+
+TRACKED: criteria added to LIC-003, FND-004, FND-005, DST-001, PRT-001, PRT-002, FND-003
+
+CODEX: task committed (6eca221), branch pushed as review/codex/FND-001; no findings yet
+
+OPEN: config/prod.json was changed outside this session at 21:28 (mock API on, dev URL);
+  not committed, waiting for the owner
+
+NEXT STEPS:
+- Resolve prod.json, incorporate Codex findings, merge feature/FND-001 into main
+- Then DST-001 (first iOS build)
+================================================================================

@@ -46,3 +46,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Signing keys and credentials (never commit)
+*.p12
+*.pem
+*.mobileprovision
+ExportOptions.plist
+google-services.json
+GoogleService-Info.plist
+.env
+.env.*
+**/play-service-account*.json

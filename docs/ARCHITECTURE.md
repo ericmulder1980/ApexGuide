@@ -88,3 +88,5 @@ See `.claude/memory/decisions.md`:
 | DEC-011 | Project conventions: app ID, minimum versions, folder layout, lints, build config |
 | DEC-012 | Flutter 3.38.10 pinned until a macOS 14+ development machine is available |
 | DEC-013 | Proprietary license held by WebMiller; boilerplate files stay GPL v3 |
+| DEC-014 | App ID nl.webmiller.apexguide |
+| DEC-015 | Distribution accounts and CI for pilot builds |

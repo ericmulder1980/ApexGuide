@@ -479,3 +479,33 @@ NEXT SESSION:
   the runner's Xcode and the App Store SDK requirement; upload key and Play App Signing
 - Owner: domain and app ID (ISS-008), macOS 14+ hardware (ISS-007), logo variants (ISS-006)
 ================================================================================
+
+================================================================================
+[2026-10-07 22:45] PLANNING SESSION COMPLETE
+Feature: DST-001 - Pilot builds: signed APK and TestFlight
+Agent: PLANNER
+Branch: feature/DST-001
+
+DELIVERABLES:
+- Spec: docs/specs/DST-001-spec.md (status Ready for Implementation)
+- Tasks DST-001-T1 to T7 in features.json; current_feature DST-001
+- DEC-014 (app ID nl.webmiller.apexguide, supersedes DEC-011 item 1)
+- DEC-015 (Apple individual enrollment, Play org/personal, public repo with CI hardening,
+  manual iOS signing + altool upload, APK as GitHub pre-release, prod.json for pilots)
+- DEC-011 and DEC-013 status lines amended; ISS-008 narrowed to the product/API domain
+
+OWNER DECISIONS:
+- WebMiller is an eenmanszaak -> Apple individual enrollment (owner's legal name as seller)
+- Domain webmiller.nl; repository stays public; TestFlight external link later, internal
+  testing first; pilot APK as public GitHub pre-release; pilot builds use config/prod.json
+
+RESEARCH (2026-10-07):
+- App Store uploads need Xcode 26 since 2026-04-28; GitHub macos-26 image has Xcode
+  26.2-26.6, macos-15 has 26.0.1-26.3; Flutter 3.38 supports Xcode 26 but newer point
+  releases have reported issues -> pin Xcode 26.3, build check first (T5)
+- Android developer verification for sideloaded apps: BR/ID/SG/TH from Sept 2026, global 2027
+- TestFlight internal testers must be App Store Connect users; external needs beta review
+
+NEXT:
+- T1 app ID change, then T2 account checklist for the owner; T3/T4/T5 while accounts verify
+================================================================================

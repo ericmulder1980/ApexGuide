@@ -20,7 +20,7 @@
       "Platform channels: Android FLAG_SECURE, iOS secure text layer"
     ],
     "repository": "Flutter app only; Drupal central application lives in a separate repository (EXT-* features are tracked here as dependencies, not built here)",
-    "current_feature": "FND-001",
+    "current_feature": "DST-001",
     "id_prefixes": {
       "FND": "Foundation",
       "SYN": "Sync",
@@ -490,24 +490,40 @@
     {
       "id": "DST-001",
       "title": "Pilot builds: signed APK and TestFlight",
-      "description": "Signed Android APK shared by link; iOS built and uploaded to TestFlight via a GitHub Actions macOS runner (the 2016 MacBook Pro cannot run Xcode 26). Schedule directly after FND-001: it is the first iOS build (DEC-011).",
+      "description": "Signed Android APK published as a GitHub pre-release; iOS built and uploaded to TestFlight via a GitHub Actions macOS runner (the 2016 MacBook Pro cannot run Xcode 26). Schedule directly after FND-001: it is the first iOS build (DEC-011).",
       "release_phase": 1,
       "moscow": "Must",
       "priority": "high",
       "requirements": ["R-01"],
       "dependencies": ["FND-001"],
       "external_dependencies": [],
-      "lifecycle": { "phase": "inception", "status": "pending" },
+      "decisions": ["DEC-006", "DEC-011", "DEC-012", "DEC-013", "DEC-014", "DEC-015"],
+      "lifecycle": { "phase": "planning", "status": "complete" },
+      "planning": { "status": "complete", "spec_file": "docs/specs/DST-001-spec.md", "completed": "2026-10-07" },
       "acceptance_criteria": [
-        "Signed APK installable from a link",
-        "macOS runner workflow builds and uploads to TestFlight internal group",
-        "Signing secrets stored as GitHub secrets, never in the repo",
-        "Apple Developer and Google Play accounts opened",
-        "Builds use the ApexGuide app icon from FND-001",
-        "Upload key created and stored outside the repo (android/key.properties, CI secrets); Play App Signing enabled (FND-001 review: release builds refuse to sign without key.properties)",
-        "Release builds obfuscated with --obfuscate --split-debug-info; symbols kept out of the repo",
-        "iOS: ITSAppUsesNonExemptEncryption set correctly (SQLite3 Multiple Ciphers); signing via CI secrets"
-      ]
+        "App ID nl.webmiller.apexguide on Android and iOS before any store registration (DEC-014)",
+        "Apple Developer Program (individual) and Google Play Console accounts opened; Android developer verification started",
+        "Android app signing key created outside the repo, backed up offline, usable later as Play app signing key via PEPK",
+        "Signed, obfuscated release APK built by a GitHub Actions workflow and published as a GitHub pre-release",
+        "iOS release build compiles on a GitHub Actions macOS runner with Xcode 26",
+        "macOS workflow signs the IPA and uploads it to TestFlight; owner installs it through internal testing",
+        "Signing secrets only in a protected GitHub environment, never in the repo or logs",
+        "Workflows safe in a public repository: manual trigger, no pull_request_target, read-only token except the release job, actions pinned to a commit SHA",
+        "ITSAppUsesNonExemptEncryption set according to the export-compliance outcome for SQLite3 Multiple Ciphers",
+        "Debug symbols from --split-debug-info kept as workflow artifacts, never committed",
+        "Builds use the ApexGuide launcher icon from FND-001"
+      ],
+      "implementation": {
+        "tasks": [
+          { "id": "DST-001-T1", "title": "App ID nl.webmiller.apexguide on Android and iOS (DEC-014)", "estimate": "S", "depends_on": [], "status": "pending" },
+          { "id": "DST-001-T2", "title": "Developer accounts: Apple individual enrollment, D-U-N-S lookup, Google Play Console, Android developer verification (owner)", "estimate": "L", "depends_on": ["DST-001-T1"], "status": "pending" },
+          { "id": "DST-001-T3", "title": "Android app signing key created by the owner; key.properties; GitHub environment release", "estimate": "S", "depends_on": ["DST-001-T1"], "status": "pending" },
+          { "id": "DST-001-T4", "title": "android-release.yml: analyze, test, obfuscated signed APK, apksigner verify, GitHub pre-release", "estimate": "M", "depends_on": ["DST-001-T3"], "status": "pending" },
+          { "id": "DST-001-T5", "title": "ios-build-check.yml: unsigned iOS release build on macos-26 with Xcode 26.3", "estimate": "M", "depends_on": ["DST-001-T1"], "status": "pending" },
+          { "id": "DST-001-T6", "title": "iOS signing, export compliance, ios-testflight.yml upload to TestFlight", "estimate": "L", "depends_on": ["DST-001-T2", "DST-001-T5"], "status": "pending" },
+          { "id": "DST-001-T7", "title": "Wrap-up: DEC-013/LICENSE wording, README and DEVELOPMENT.md release sections, resolve ISS-002, memory", "estimate": "S", "depends_on": ["DST-001-T4", "DST-001-T6"], "status": "pending" }
+        ]
+      }
     },
     {
       "id": "VID-001",

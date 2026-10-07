@@ -83,7 +83,7 @@ Pending: install Node (nodejs.org installer recommended) or clone flutter/skills
 - The app ID `com.apexguide.app` (DEC-011) follows reverse-domain naming for a domain we do not own. The stores do not verify this, but the ID is permanent once published.
 
 **Resolution:**
-Pending: choose a domain (buy apexguide.com from its owner, or another TLD such as apexguide.app or apexguide.nl). Then set `API_BASE_URL` in `config/prod.json` before the first production build, and confirm or change the app ID before DST-001 publishes anything.
+App ID resolved: `nl.webmiller.apexguide` (DEC-014, 2026-10-07), based on WebMiller's own domain. Still pending: the product and API domain (buy apexguide.com from its owner, or another TLD such as apexguide.app or apexguide.nl); then set `API_BASE_URL` in `config/prod.json` before the API exists in production.
 
 ---
 

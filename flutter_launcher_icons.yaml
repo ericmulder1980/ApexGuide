@@ -1,0 +1,18 @@
+# Launcher icons for Android and iOS. Regenerate with:
+#   dart run flutter_launcher_icons
+#   git checkout -- ios/Runner.xcodeproj/project.pbxproj
+# flutter_launcher_icons 0.14.4 wrongly sets
+# ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS to "AppIcon";
+# the project already has ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon.
+# The sources in assets/icon/ are cropped from the A mark of logo_full.svg
+# (DEC-011) until ISS-006 delivers app_icon.
+flutter_launcher_icons:
+  image_path: "assets/icon/app_icon.png"
+  android: true
+  min_sdk_android: 24
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+  # The foreground PNG is already sized to the adaptive-icon safe zone.
+  adaptive_icon_foreground_inset: 0
+  ios: true
+  remove_alpha_ios: true

@@ -182,3 +182,300 @@ OPEN QUESTIONS:
 - Does riverpod_lint use custom_lint or the analyzer plugin system now? (T3)
 - Schedule DST-001 directly after FND-001 (first iOS build)
 ================================================================================
+
+================================================================================
+[2026-10-07 15:10] SESSION END
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T1 - Development environment
+
+COMPLETED:
+- ISS-006 narrowed: logo_full.svg is a true vector and is enough for T6; other
+  logo variants still pending for THM-002 and DST-001
+- Flutter 3.38.10 (Dart 3.10.9) installed at ~/development/flutter (checksum verified)
+- Android SDK: emulator, android-36 platform, android-34 and android-36 system images;
+  Gradle added NDK and CMake on the first build; licenses were already accepted
+- ~/.zshrc: ANDROID_HOME and PATH (backup at ~/.zshrc.bak-2026-10-07)
+- AVD apexguide_pixel (Android 14, 720 x 1280); sample app built, installed and
+  responsive (counter taps verified by screenshot)
+- flutter doctor: Flutter and Android toolchain green; Xcode fails as expected
+- docs/DEVELOPMENT.md written (setup steps); FND-001 spec, CLAUDE.md, ARCHITECTURE.md
+  and the main spec updated for DEC-012
+
+IN PROGRESS:
+- FND-001 now in implementation; T2 next
+
+TESTS: n/a (environment task; no app code yet)
+
+DECISIONS: DEC-012 - Pin Flutter 3.38.10 until a macOS 14+ development machine;
+           amends DEC-010 package versions (go_router 17.5.0, very_good_analysis 10.1.0,
+           flutter_riverpod 3.3.2, others unchanged or patch-level)
+
+FILES CHANGED:
++ docs/DEVELOPMENT.md
+M .claude/memory/decisions.md (DEC-012; DEC-010 status)
+M .claude/memory/issues.md (ISS-007 new; ISS-006 updated)
+M .claude/memory/features.json
+M docs/specs/FND-001-spec.md
+M docs/specs/Track Guide – Project & Implementation Plan.md
+M docs/ARCHITECTURE.md
+M CLAUDE.md
+
+BLOCKERS: none for T2. ISS-007 (needs macOS 14+ hardware) is a known limitation.
+
+NEXT SESSION:
+- FND-001-T2: flutter create with app ID com.apexguide.app, minSdk 24, iOS 15, portrait lock
+- T3: riverpod_lint 3.1.4 - check custom_lint vs analyzer plugin system
+- DST-001: confirm Flutter 3.38.10 builds with the Xcode on GitHub macOS runners and
+  meets the App Store SDK requirement (Xcode 26 since 28 Apr 2026)
+- Owner: plan new Apple-silicon hardware, then upgrade to Flutter 3.47+ (DEC-012 notes)
+
+CONTEXT FOR NEXT SESSION:
+- Dart 3.11+ will not start on macOS 12; `dart --version` succeeds anyway, so test by
+  running a script, not by printing the version
+- Emulator: after a cold boot wait several minutes (load ~40) before installing;
+  "Broken pipe" from adb install means the system is not settled yet. Don't run a
+  Gradle build and a cold boot at the same time
+- adb is in $ANDROID_HOME/platform-tools; new shells pick up PATH from ~/.zshrc
+- SETUP.md is the boilerplate guide; app setup lives in docs/DEVELOPMENT.md
+
+Commit: (pending owner approval)
+================================================================================
+
+================================================================================
+[2026-10-07 15:05] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T2 - Create the project
+
+COMPLETED:
+- flutter create (Flutter 3.38.10) generated in the scratchpad and copied in, so
+  README.md and the boilerplate files were not touched; Flutter's .gitignore merged
+  into the root .gitignore
+- App ID com.apexguide.app (Android applicationId + namespace, MainActivity moved to
+  com/apexguide/app; iOS bundle ID, RunnerTests com.apexguide.app.RunnerTests)
+- Display name ApexGuide (Android label, CFBundleDisplayName, CFBundleName)
+- minSdk 24; iOS deployment target 15.0 (pbxproj and AppFrameworkInfo.plist)
+- Portrait lock: SystemChrome in lib/main.dart (lockPortrait), android:screenOrientation
+  on MainActivity, portrait-only orientations in Info.plist (iPhone and iPad)
+- lib/app/app.dart: placeholder ApexGuideApp (T5 replaces with go_router)
+- test/app_test.dart replaces the counter test: renders home; lockPortrait sends
+  portraitUp only
+
+TESTS: 2/2 passing; flutter analyze clean (flutter_lints until T3)
+VERIFIED ON EMULATOR: aapt2 badging shows com.apexguide.app, label ApexGuide, minSdk 24;
+  app stays ROTATION_0 with landscape forced, while Settings rotates to 90 (control)
+
+NOTES:
+- Incremental debug build ~80 s; debug cold start on the emulator ~54 s
+- Owner decision: iPhone only (TARGETED_DEVICE_FAMILY = 1, iPad orientation key
+  removed), recorded as DEC-011 item 9
+
+NEXT: FND-001-T3 - very_good_analysis 10.1.0 + riverpod_lint 3.1.4 (custom_lint vs
+  analyzer plugin question)
+================================================================================
+
+================================================================================
+[2026-10-07 15:25] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T3 - Lints
+
+COMPLETED:
+- very_good_analysis 10.1.0 (exact pin) replaces flutter_lints; cupertino_icons removed
+  (unused template dependency)
+- riverpod_lint 3.1.4 as an analyzer plugin under `plugins:` in analysis_options.yaml;
+  it uses analysis_server_plugin, not custom_lint, and is not a dev dependency
+- pubspec environment pins flutter: 3.38.10 (DEC-012)
+- analysis_options excludes **/*.g.dart ahead of code generation in T4
+- Fixed public_member_api_docs on ApexGuideApp; kept the rule on (VGA default)
+
+TESTS: 2/2 passing; flutter analyze clean; dart format clean
+
+NOTES:
+- Plugin diagnostics need a prefixed ignore: `// ignore: riverpod_lint/<rule>`
+- lib/main.dart has a temporary `riverpod_lint/missing_provider_scope` ignore; T4 adds
+  ProviderScope and must remove it
+- flutter analyze now takes ~40 s with the plugin (was ~17 s)
+
+NEXT: FND-001-T4 - flutter_riverpod 3.3.2, riverpod_annotation 4.0.3,
+  riverpod_generator 4.0.4, build_runner 2.15.1, ProviderScope, AppConfig, config files
+================================================================================
+
+================================================================================
+[2026-10-07 15:50] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T4 - Riverpod, AppConfig and config files
+
+COMPLETED:
+- flutter_riverpod 3.1.0, riverpod_annotation 4.0.0, riverpod_generator 4.0.0+1,
+  build_runner 2.15.1 (exact pins). DEC-012's 3.3.2/4.0.3/4.0.4 do not resolve:
+  Flutter 3.38 pins meta 1.17.0, riverpod_generator 4.0.4+ needs analyzer 12 (meta 1.18).
+  DEC-012 and the FND-001 spec corrected
+- ProviderScope at the root; temporary missing_provider_scope ignore removed
+- lib/core/config/app_config.dart: AppConfig.fromEnvironment (API_BASE_URL,
+  USE_MOCK_API defaulting to true) and keepAlive appConfigProvider (codegen)
+- config/dev.json (http://10.0.2.2:8080, the host machine as seen from the Android
+  emulator; FND-005 confirms the mock API port) and config/prod.json (URL empty)
+- Generated app_config.g.dart committed so a fresh clone analyzes without build_runner
+
+TESTS: 8/8 passing; flutter analyze clean. With --dart-define-from-file=config/prod.json
+  the two environment tests fail as expected, proving the defines are read
+
+OPEN:
+- Production API_BASE_URL unknown; apexguide.com is taken (ISS-008). Set it before the first prod build
+
+NEXT: FND-001-T5 - go_router 17.5.0, routes.dart, router provider, placeholder screens,
+  router tests
+================================================================================
+
+================================================================================
+[2026-10-07 15:35] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T5 - Router and placeholder screens
+
+COMPLETED:
+- go_router 17.5.0 (exact pin, resolves with Flutter 3.38.10)
+- lib/app/routes.dart: Routes (paths, path parameter names, trackLocation and
+  cornerLocation helpers) and RouteNames
+- lib/app/router.dart: keepAlive routerProvider (codegen), nested
+  /tracks/:trackId/corners/:cornerNo, errorBuilder, router disposed with the provider;
+  LIC-003 adds `redirect` here
+- One placeholder screen per route under lib/features/<area>/presentation/ (start,
+  activation, sync, tracks, settings, license), sharing lib/core/widgets/placeholder_screen.dart
+- lib/app/route_error_screen.dart for unknown paths and a non-numeric corner number
+- ApexGuideApp is a ConsumerWidget using MaterialApp.router
+
+TESTS: 20/20 passing (router: every route, path parameters, unknown path, invalid corner
+  number; app: boots to /); flutter analyze clean
+VERIFIED ON EMULATOR: debug build with config/dev.json starts on the start screen
+
+NOTES:
+- Bash heredoc writing many files hit a transient auto-mode classifier error; the Write
+  tool per file worked
+
+NEXT: FND-001-T6 - launcher icon from the A mark of logo_full.svg (flutter_launcher_icons
+  0.14.4); check the red kerb stripes at 48 px (ISS-006)
+================================================================================
+
+================================================================================
+[2026-10-07 15:40] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T6 - Launcher icon
+
+COMPLETED:
+- assets/icon/app_icon.svg: A mark subpaths (navy + red, y < 560) from logo_full.svg,
+  evenodd fill kept, ~76% of a white 1024 square; rendered to app_icon.png with
+  rsvg-convert (no alpha, as iOS requires)
+- assets/icon/app_icon_foreground.svg/.png: transparent, every point within 95% of the
+  adaptive-icon safe circle (66/108)
+- flutter_launcher_icons 0.14.4 (exact pin) with flutter_launcher_icons.yaml:
+  adaptive icon (white background, inset 0), legacy icons, iOS AppIcon set
+
+ISSUES FOUND:
+- flutter_launcher_icons 0.14.4 rewrites ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_
+  SYMBOL_EXTENSIONS = YES to "AppIcon" in project.pbxproj on every run; reverted, and
+  the yaml documents `git checkout -- ios/Runner.xcodeproj/project.pbxproj` after
+  regenerating
+- Default adaptive inset (16%) would shrink the pre-sized foreground; set to 0
+
+VERIFIED: icon legible in the emulator app drawer (circular mask) with label ApexGuide;
+  at 48 px the red kerb stripes blur into dashes but the A and racing line read (ISS-006)
+TESTS: 20/20 passing (no code changes)
+
+NEXT: FND-001-T7 - wrap-up: README commands, full analyze and test run, emulator smoke
+  test, memory update
+================================================================================
+
+================================================================================
+[2026-10-07 15:55] SESSION END
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T7 - Wrap-up (T1-T7 complete; feature moved to review)
+
+COMPLETED:
+- README.md rewritten for ApexGuide (requirements, commands, layout, doc links); the
+  boilerplate README moved unchanged to docs/boilerplate/README.md with fixed links
+  (owner choice)
+- Full run: dart format clean, flutter analyze clean, flutter test 20/20
+- Emulator smoke test of every route via `am start --es route <path>`: all eight
+  routes, path parameters (Track eefde, corner 3) and both error cases render; no
+  Flutter errors in logcat
+- FND-001 spec acceptance criteria ticked, status "Implemented, awaiting review";
+  features.json FND-001 lifecycle review/pending
+
+TESTS: 20/20 passing
+
+COMMITS THIS SESSION: 50a6c38 (T1 docs), 6684477 (T2), 676a471 (T3), 198b07d (T4),
+  f6d40ba (T5), 9d87a4e (T6), T7 pending
+
+DECISIONS: DEC-012 (Flutter 3.38.10 pin); DEC-011 item 9 (iPhone only)
+ISSUES: ISS-007 (macOS 14 / emulator), ISS-008 (domain and app ID), ISS-006 narrowed
+
+NEXT SESSION:
+- /review for FND-001 (guardians), then merge feature/FND-001 into main
+- DST-001 directly after FND-001: first iOS build on GitHub Actions; confirm Flutter
+  3.38.10 builds with the runner's Xcode and meets the App Store SDK requirement
+- Owner: decide the domain and confirm the app ID before DST-001 (ISS-008); plan
+  macOS 14+ hardware (ISS-007)
+- License settled (DEC-013): proprietary, (c) 2026 WebMiller; boilerplate GPL v3 moved
+  to docs/boilerplate/LICENSE; SET-001 gains an open-source licenses entry
+  (showLicensePage). Check the license of every new package before adding it
+
+CONTEXT FOR NEXT SESSION:
+- Android's FlutterActivity accepts an initial route through the `route` intent extra,
+  and go_router honours it, so any app can open a deep route. LIC-003's redirect must
+  also guard the initial location (go_router runs redirect for it)
+- Emulator: cold boot needs minutes to settle; debug cold start ~20-50 s
+- Regenerating launcher icons needs `git checkout -- ios/Runner.xcodeproj/project.pbxproj`
+================================================================================
+
+================================================================================
+[2026-10-07 21:50] CODE REVIEW COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Agent: REVIEWER
+
+RESULT: APPROVED after fixes (owner chose option A)
+Review restarted once because of connectivity problems; results below are from the rerun.
+
+AUTOMATED: format clean; flutter analyze clean; 21/21 tests target (20 + new helper test),
+  94.6% coverage excl. generated; generated files current; no discontinued packages
+
+GUARDIANS (architecture, test, security, docs):
+- Architecture 0/0/3/5, Security 0/2/2/6, Test 0/0/4/3 (2 rejected), Docs clean
+- Rejected: config_test cwd fragility (flutter test runs from the package root);
+  prod.json empty URL (intended, ISS-008). Earlier run's ProviderContainer disposal
+  finding was false: ProviderContainer.test registers addTearDown(dispose)
+
+FIXED BEFORE MERGE:
+- Release signing from android/key.properties; Gradle refuses release apk/bundle without
+  it (verified: assembleRelease/bundleRelease refused, debug fine, throwaway keystore
+  passes validateSigningRelease)
+- allowBackup=false + data_extraction_rules.xml (cloud backup and device transfer)
+- INTERNET permission in the main manifest
+- Routes.trackSegment / cornersSegment / cornerSegment; test that location helpers equal
+  router.namedLocation
+- router.dart doc comment: LIC-003 refresh/redirect pattern, deny-by-default, initial route
+- .gitignore: signing and credential files; docs/DEVELOPMENT.md release signing section
+
+TRACKED: criteria added to LIC-003, FND-004, FND-005, DST-001, PRT-001, PRT-002, FND-003
+
+CODEX: task committed (6eca221), branch pushed as review/codex/FND-001; no findings yet
+
+RESOLVED: config/prod.json had been changed outside the session at 21:28 (mock API on,
+  emulator dev URL); restored to the committed version on the owner's instruction
+
+NEXT STEPS:
+- Resolve prod.json, incorporate Codex findings, merge feature/FND-001 into main
+- Then DST-001 (first iOS build)
+================================================================================
+
+================================================================================
+[2026-10-07 22:05] FEATURE MERGED
+Feature: FND-001 - Flutter project scaffold
+
+- feature/FND-001 merged into main (--no-ff) by owner decision, without waiting for
+  the Codex findings on review/codex/FND-001; incorporate them as follow-up if they arrive
+- features.json: FND-001 lifecycle merged
+
+NEXT SESSION:
+- DST-001: first iOS build on a GitHub Actions macOS runner; confirm Flutter 3.38.10 with
+  the runner's Xcode and the App Store SDK requirement; upload key and Play App Signing
+- Owner: domain and app ID (ISS-008), macOS 14+ hardware (ISS-007), logo variants (ISS-006)
+================================================================================

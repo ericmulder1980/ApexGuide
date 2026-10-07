@@ -1,7 +1,7 @@
 {
   "project": "ApexGuide",
   "version": "0.1.0",
-  "last_updated": "2026-10-06",
+  "last_updated": "2026-10-07",
   "metadata": {
     "created": "2026-10-02",
     "initialized_by": "user",
@@ -10,7 +10,7 @@
     "design_reference": "reference/prototype/track-guide-ui-designs/project/ApexGuide Screens.dc.html",
     "erd": "docs/database/mobile-erd.md",
     "tech_stack": [
-      "Flutter 3.47",
+      "Flutter 3.38.10 (pinned, DEC-012)",
       "Riverpod 3",
       "go_router",
       "drift + SQLite3 Multiple Ciphers",
@@ -48,8 +48,9 @@
       "requirements": ["R-01"],
       "dependencies": [],
       "external_dependencies": [],
-      "decisions": ["DEC-010", "DEC-011"],
-      "lifecycle": { "phase": "planning", "status": "pending" },
+      "decisions": ["DEC-010", "DEC-011", "DEC-012"],
+      "lifecycle": { "phase": "merged", "status": "complete", "started": "2026-10-07", "implementation_completed": "2026-10-07", "merged": "2026-10-07" },
+      "review": {"status": "complete", "date": "2026-10-07", "result": "approved after fixes", "summary": "Automated checks clean; guardians: architecture, test, security, docs. Fixed before merge: release signing refuses the debug key, Android backup and device transfer disabled, INTERNET in main manifest, route segment constants and helper/route-table test, LIC-003 guidance in router.dart. Tracked items added to LIC-003, FND-004, FND-005, DST-001, PRT-001, PRT-002, FND-003. Codex review requested on review/codex/FND-001; owner merged without waiting for its findings."},
       "planning": { "status": "complete", "spec_file": "docs/specs/FND-001-spec.md", "completed": "2026-10-06" },
       "acceptance_criteria": [
         "App builds and runs on an Android emulator or device (iOS verification deferred to DST-001, DEC-011)",
@@ -60,17 +61,17 @@
         "AppConfig read from config/dev.json or config/prod.json via --dart-define-from-file",
         "flutter analyze (very_good_analysis) and flutter test run clean, with app, router and config tests",
         "Launcher icons generated from the A mark of logo_full.svg on a square white background (until ISS-006 delivers app_icon)",
-        "Exact versions from DEC-010 pinned for the packages FND-001 adds"
+        "Exact versions from DEC-010 as amended by DEC-012 pinned for the packages FND-001 adds"
       ],
       "implementation": {
         "tasks": [
-          { "id": "FND-001-T1", "title": "Development environment: Flutter 3.47, Android SDK and emulator, flutter doctor green for Android", "estimate": "M", "depends_on": [], "status": "pending" },
-          { "id": "FND-001-T2", "title": "Create the project: app ID, display name, minimum versions, portrait lock", "estimate": "S", "depends_on": ["FND-001-T1"], "status": "pending" },
-          { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
-          { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "pending" },
-          { "id": "FND-001-T5", "title": "go_router provider, route constants and placeholder screens with router tests", "estimate": "M", "depends_on": ["FND-001-T4"], "status": "pending" },
-          { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
-          { "id": "FND-001-T7", "title": "Wrap-up: README commands, full analyze and test run, emulator smoke test, memory update", "estimate": "S", "depends_on": ["FND-001-T5", "FND-001-T6"], "status": "pending" }
+          { "id": "FND-001-T1", "title": "Development environment: Flutter 3.38.10 (DEC-012), Android SDK and emulator, flutter doctor green for Android", "estimate": "M", "depends_on": [], "status": "complete", "completed": "2026-10-07" },
+          { "id": "FND-001-T2", "title": "Create the project: app ID, display name, minimum versions, portrait lock", "estimate": "S", "depends_on": ["FND-001-T1"], "status": "complete", "completed": "2026-10-07" },
+          { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "complete", "completed": "2026-10-07" },
+          { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "complete", "completed": "2026-10-07" },
+          { "id": "FND-001-T5", "title": "go_router provider, route constants and placeholder screens with router tests", "estimate": "M", "depends_on": ["FND-001-T4"], "status": "complete", "completed": "2026-10-07" },
+          { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "complete", "completed": "2026-10-07" },
+          { "id": "FND-001-T7", "title": "Wrap-up: README commands, full analyze and test run, emulator smoke test, memory update", "estimate": "S", "depends_on": ["FND-001-T5", "FND-001-T6"], "status": "complete", "completed": "2026-10-07" }
         ]
       }
     },
@@ -106,7 +107,8 @@
       "acceptance_criteria": [
         "All UI strings come from en and nl resource files",
         "App follows device language for en/nl, falls back to en otherwise",
-        "Language can be overridden at runtime and persists"
+        "Language can be overridden at runtime and persists",
+        "RouteErrorScreen and placeholder texts move to translations (FND-001 review)"
       ]
     },
     {
@@ -124,7 +126,9 @@
         "All tables from the ERD exist with keys and ON DELETE CASCADE to TRACK",
         "Database file is unreadable without the key",
         "Key is generated on first launch and stored in Keystore/Keychain",
-        "Schema covered by tests against an in-memory database"
+        "Schema covered by tests against an in-memory database",
+        "Async bootstrap in main() for database and secure storage, injected as ProviderScope overrides (FND-001 review)",
+        "iOS: database and image directories excluded from backup (isExcludedFromBackup); Android backup and device transfer already disabled in FND-001"
       ]
     },
     {
@@ -143,7 +147,9 @@
         "403 on any endpoint surfaces as a single 'revoked' event",
         "426 surfaces as an 'update required' event",
         "server_time from every response is stored",
-        "Mock API serves a demo tenant with one indoor and one outdoor track"
+        "Mock API serves a demo tenant with one indoor and one outdoor track",
+        "Release build refuses USE_MOCK_API=true or a non-https API_BASE_URL (FND-001 review)",
+        "Cleartext http to 10.0.2.2/localhost allowed only through a debug-only network security config"
       ]
     },
     {
@@ -265,7 +271,10 @@
       "acceptance_criteria": [
         "Unit tests with a fake clock and fake API cover: bind, re-enter on same installation, refuse on another, refresh, expiry wipe, revocation, clock moved back, offline paths",
         "Expired token wipes content but keeps the installation id",
-        "Re-entering the same key on the same installation restores access"
+        "Re-entering the same key on the same installation restores access",
+        "Router keeps one GoRouter: license state reaches redirect through ref.listen + refreshListenable, never ref.watch in routerProvider (FND-001 review)",
+        "Redirect is deny-by-default (only start, activation and locked open without a valid license), runs for the initial location, waits for license state to load, and is tested with a deep-link start such as /tracks/x/corners/1 (Android route intent extra)",
+        "Route table extracted from routerProvider; redirect is a pure, unit-tested function"
       ]
     },
     {
@@ -298,7 +307,8 @@
       "lifecycle": { "phase": "inception", "status": "pending" },
       "acceptance_criteria": [
         "Screenshots and screen recording show a blank/blocked screen on Android 12+",
-        "Corner text cannot be selected or copied"
+        "Corner text cannot be selected or copied",
+        "FLAG_SECURE also hides the app in the recent-apps snapshot (FND-001 review)"
       ]
     },
     {
@@ -315,7 +325,8 @@
       "acceptance_criteria": [
         "Screenshots and recordings show the corner text area blank on iOS 16+",
         "Text not selectable",
-        "Implementation isolated in one platform view"
+        "Implementation isolated in one platform view",
+        "iOS secure layer also covers the app-switcher snapshot (FND-001 review)"
       ]
     },
     {
@@ -472,7 +483,8 @@
         "Theme and language overrides take effect immediately",
         "License status and next check shown",
         "Wipe and re-activate asks for confirmation",
-        "No track-day mode switch until UX-001 ships"
+        "No track-day mode switch until UX-001 ships",
+        "Open-source licenses entry opens showLicensePage with the app name and version (DEC-013)"
       ]
     },
     {
@@ -491,7 +503,10 @@
         "macOS runner workflow builds and uploads to TestFlight internal group",
         "Signing secrets stored as GitHub secrets, never in the repo",
         "Apple Developer and Google Play accounts opened",
-        "Builds use the ApexGuide app icon from FND-001"
+        "Builds use the ApexGuide app icon from FND-001",
+        "Upload key created and stored outside the repo (android/key.properties, CI secrets); Play App Signing enabled (FND-001 review: release builds refuse to sign without key.properties)",
+        "Release builds obfuscated with --obfuscate --split-debug-info; symbols kept out of the repo",
+        "iOS: ITSAppUsesNonExemptEncryption set correctly (SQLite3 Multiple Ciphers); signing via CI secrets"
       ]
     },
     {

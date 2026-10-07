@@ -86,3 +86,5 @@ See `.claude/memory/decisions.md`:
 | DEC-009 | Demo mode via a server-side demo tenant and shared demo key |
 | DEC-010 | App stack verified and pinned: SQLite3 Multiple Ciphers and youtube_player_iframe |
 | DEC-011 | Project conventions: app ID, minimum versions, folder layout, lints, build config |
+| DEC-012 | Flutter 3.38.10 pinned until a macOS 14+ development machine is available |
+| DEC-013 | Proprietary license held by WebMiller; boilerplate files stay GPL v3 |

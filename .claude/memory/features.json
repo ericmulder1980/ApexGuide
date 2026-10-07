@@ -1,7 +1,7 @@
 {
   "project": "ApexGuide",
   "version": "0.1.0",
-  "last_updated": "2026-10-06",
+  "last_updated": "2026-10-07",
   "metadata": {
     "created": "2026-10-02",
     "initialized_by": "user",
@@ -10,7 +10,7 @@
     "design_reference": "reference/prototype/track-guide-ui-designs/project/ApexGuide Screens.dc.html",
     "erd": "docs/database/mobile-erd.md",
     "tech_stack": [
-      "Flutter 3.47",
+      "Flutter 3.38.10 (pinned, DEC-012)",
       "Riverpod 3",
       "go_router",
       "drift + SQLite3 Multiple Ciphers",
@@ -48,8 +48,8 @@
       "requirements": ["R-01"],
       "dependencies": [],
       "external_dependencies": [],
-      "decisions": ["DEC-010", "DEC-011"],
-      "lifecycle": { "phase": "planning", "status": "pending" },
+      "decisions": ["DEC-010", "DEC-011", "DEC-012"],
+      "lifecycle": { "phase": "implementation", "status": "in_progress", "started": "2026-10-07" },
       "planning": { "status": "complete", "spec_file": "docs/specs/FND-001-spec.md", "completed": "2026-10-06" },
       "acceptance_criteria": [
         "App builds and runs on an Android emulator or device (iOS verification deferred to DST-001, DEC-011)",
@@ -60,11 +60,11 @@
         "AppConfig read from config/dev.json or config/prod.json via --dart-define-from-file",
         "flutter analyze (very_good_analysis) and flutter test run clean, with app, router and config tests",
         "Launcher icons generated from the A mark of logo_full.svg on a square white background (until ISS-006 delivers app_icon)",
-        "Exact versions from DEC-010 pinned for the packages FND-001 adds"
+        "Exact versions from DEC-010 as amended by DEC-012 pinned for the packages FND-001 adds"
       ],
       "implementation": {
         "tasks": [
-          { "id": "FND-001-T1", "title": "Development environment: Flutter 3.47, Android SDK and emulator, flutter doctor green for Android", "estimate": "M", "depends_on": [], "status": "pending" },
+          { "id": "FND-001-T1", "title": "Development environment: Flutter 3.38.10 (DEC-012), Android SDK and emulator, flutter doctor green for Android", "estimate": "M", "depends_on": [], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T2", "title": "Create the project: app ID, display name, minimum versions, portrait lock", "estimate": "S", "depends_on": ["FND-001-T1"], "status": "pending" },
           { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
           { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "pending" },

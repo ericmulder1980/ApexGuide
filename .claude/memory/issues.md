@@ -71,6 +71,27 @@ Pending: install Node (nodejs.org installer recommended) or clone flutter/skills
 
 ---
 
+### ISS-007: Development machine cannot run current Flutter, and the emulator is slow
+**Reported:** 2026-10-07
+**Status:** Open
+**Severity:** High
+**Related Feature:** FND-001, DST-001
+
+**Symptoms:**
+- Flutter 3.47.6 fails on start: "VM initialization failed: Current Mac OS X version 12.0 is lower than minimum supported version 14.0".
+- The MacBook Pro 2016 (MacBookPro13,2, dual-core i7, 16 GB) cannot officially run macOS 14.
+- Android emulator: the Android 16 Play Store image hung until the system watchdog restarted `system_server`. The Android 14 image works, but each cold boot spends several minutes at high load with "System UI isn't responding" dialogs before it settles.
+
+**Investigation Log:**
+- Ran a hello-world script with each Dart release: 3.8.3, 3.9.4 and 3.10.7 run; every release from 3.11.0 to 3.13.5 fails. `dart --version` alone succeeds and is not a valid test.
+- Dart's system requirements list macOS 14, 15 and 26 only; flutter/flutter#182858 was closed as not planned.
+- Working emulator setup: AVD `apexguide_pixel`, `system-images;android-34;google_apis;x86_64`, 720 × 1280 at 320 dpi, 2 GB RAM, 2 cores, host GPU, no audio. The first Gradle build took about 8 minutes (downloads the NDK and CMake once).
+
+**Resolution:**
+Workaround: DEC-012 pins Flutter 3.38.10 (Dart 3.10.9). Use the emulator only after it has settled, or a physical Android phone over USB. Permanent fix: a macOS 14+ machine (most likely new Apple-silicon hardware), then upgrade to Flutter 3.47+.
+
+---
+
 ### ISS-006: Logo variants exist only as one combined PNG
 **Reported:** 2026-10-04
 **Status:** Open
@@ -81,8 +102,11 @@ Pending: install Node (nodejs.org installer recommended) or clone flutter/skills
 - The prototype README lists separate SVGs (logo_full, app_icon, mark, mark_app_icon, colors, racing_line, A_shape, kerb_stripe, wordmark, horizontal_lockup) and app_icon.png, but the repo only has `Logo options design.png` (all variants on one sheet) and `ApexGuide - Logo on White.png`.
 - Both PNGs have soft edges, which look muddy at small launcher icon sizes.
 
+**Investigation Log:**
+- 2026-10-07: `logo_full.svg` is in `reference/prototype/track-guide-ui-designs/`. It is a true vector (three filled paths: white `#fefefe`, navy `#05101e`, red `#ed0a19`, no embedded bitmap), so it scales cleanly. It looks auto-traced from the PNG (dense nodes, slightly wobbly edges) and the white background is a full-canvas path, so cropping to the A mark means adjusting the `viewBox`.
+
 **Resolution:**
-Pending: the project owner is creating a separate SVG per variant. FND-001 needs at least a clean 1024 × 1024 app icon before launcher icons are generated.
+Partially resolved: `logo_full.svg` is enough for FND-001-T6 (interim launcher icon from the A mark, DEC-011). Still pending for THM-002 and DST-001: the remaining variants (app_icon, mark, mark_app_icon, wordmark, horizontal_lockup and the others), ideally drawn cleanly rather than traced. Check that the red kerb stripes stay legible at 48 px when generating icons.
 
 ---
 

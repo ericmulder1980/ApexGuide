@@ -2,7 +2,7 @@
 
 ## Overview
 
-Create the ApexGuide Flutter project that every later feature builds on: an Android and iOS app with one name and icon for all tenants (R-01), locked to portrait, with Riverpod, go_router placeholder routes for every screen, strict lints, build configuration through `--dart-define-from-file`, and a working test setup. FND-001 also sets up the development machine, which has no Flutter installed yet. Stack versions come from DEC-010; project conventions are recorded in DEC-011.
+Create the ApexGuide Flutter project that every later feature builds on: an Android and iOS app with one name and icon for all tenants (R-01), locked to portrait, with Riverpod, go_router placeholder routes for every screen, strict lints, build configuration through `--dart-define-from-file`, and a working test setup. FND-001 also sets up the development machine, which has no Flutter installed yet. Stack versions come from DEC-010 as amended by DEC-012 (Flutter 3.38.10 on the current machine); project conventions are recorded in DEC-011.
 
 ## User Stories
 
@@ -32,7 +32,7 @@ Create the ApexGuide Flutter project that every later feature builds on: an Andr
 
 ### Development environment
 
-The development machine is a 2016 MacBook Pro on macOS 12.7.6 (Intel). Flutter supports macOS 12 as a host but has deprecated Intel Macs. Xcode cannot be installed on macOS 12, so iOS builds run on a GitHub Actions macOS runner (DEC-006). An Android SDK folder already exists at `~/Library/Android/sdk`.
+The development machine is a 2016 MacBook Pro on macOS 12.7.6 (Intel). Dart 3.11 and later refuse to start on macOS 12, so the newest Flutter that runs here is 3.38.10 (Dart 3.10.9); DEC-012 pins it until a macOS 14+ machine is available (ISS-007). Setup steps are in `docs/DEVELOPMENT.md`. Xcode cannot be installed on macOS 12, so iOS builds run on a GitHub Actions macOS runner (DEC-006). An Android SDK folder already exists at `~/Library/Android/sdk`.
 
 ### Project creation
 
@@ -98,16 +98,16 @@ LIC-006 adds the demo key here later. These files hold no secrets; signing keys 
 
 | Package | Kind | Version |
 | --- | --- | --- |
-| flutter_riverpod | dependency | 3.x, pinned at T4 |
-| riverpod_annotation | dependency | matching riverpod_generator |
-| go_router | dependency | 18.x, pinned at T5 |
-| riverpod_generator | dev | pinned at T4 |
-| build_runner | dev | pinned at T4 |
-| very_good_analysis | dev | 11.x, pinned at T3 |
-| riverpod_lint | dev | pinned at T3; check whether it needs custom_lint or the analyzer plugin system |
+| flutter_riverpod | dependency | 3.3.2 (DEC-012), pinned at T4 |
+| riverpod_annotation | dependency | 4.0.3, matching riverpod_generator |
+| go_router | dependency | 17.5.0 (DEC-012), pinned at T5 |
+| riverpod_generator | dev | 4.0.4, pinned at T4 |
+| build_runner | dev | 2.15.1, pinned at T4 |
+| very_good_analysis | dev | 10.1.0 (DEC-012), pinned at T3 |
+| riverpod_lint | dev | 3.1.4, pinned at T3; check whether it needs custom_lint or the analyzer plugin system |
 | flutter_launcher_icons | dev | 0.14.x, pinned at T6 |
 
-Other DEC-010 packages are added by the features that need them.
+These are the newest versions that support Dart 3.10, checked on 2026-10-07. Other DEC-010 packages are added by the features that need them.
 
 ### Key decisions
 
@@ -117,17 +117,18 @@ Recorded as DEC-011: app ID, minimum versions, folder layout, Riverpod code gene
 
 | Risk | Likelihood | Impact | Mitigation |
 | --- | --- | --- | --- |
-| Android Studio or current SDK tools do not run on macOS 12 Intel | Medium | High | Verify in T1; fall back to the command-line SDK tools in `~/Library/Android/sdk` |
-| Flutter drops Intel Mac host support during the project | Medium | High | Pin Flutter 3.47.x; plan for an Apple-silicon Mac (spec risk table) |
+| Android Studio or current SDK tools do not run on macOS 12 Intel | Resolved | — | T1 uses the command-line SDK tools only |
+| Current Flutter does not run on macOS 12 | Happened | High | Flutter 3.38.10 pinned (DEC-012); upgrade to 3.47+ on a macOS 14+ machine (ISS-007) |
+| Emulator too slow on the 2016 MacBook Pro | High | Medium | Android 14 image at 720 × 1280; wait for the first boot to settle, or use a physical Android phone |
 | iOS-specific problems surface late | Medium | Medium | Schedule DST-001 directly after FND-001 |
 | Launcher icon derived from `logo_full.svg` looks rough at small sizes | Low | Low | Replace with `app_icon` when ISS-006 delivers it; one file and one command |
 
 ## Implementation Tasks
 
 1. **FND-001-T1**: Development environment
-   - Description: Install Flutter 3.47.x, complete the Android SDK (command-line tools, platform, build-tools, emulator), create an emulator, accept licenses; `flutter doctor` green for Android. Some steps need the owner to run installers.
-   - Files: `SETUP.md`
-   - Tests: `flutter doctor`; `flutter --version` reports 3.47.x
+   - Description: Install Flutter 3.38.10 (DEC-012), complete the Android SDK (command-line tools, platform, build-tools, emulator), create an emulator, accept licenses; `flutter doctor` green for Android. Some steps need the owner to run installers.
+   - Files: `docs/DEVELOPMENT.md`
+   - Tests: `flutter doctor`; `flutter --version` reports 3.38.10
    - Depends on: none
    - Estimate: M
 
@@ -198,10 +199,10 @@ Recorded as DEC-011: app ID, minimum versions, folder layout, Riverpod code gene
 
 ## Open Questions
 
-- Does Android Studio, or only the command-line SDK tools, run on macOS 12 Intel? (T1)
+- ~~Does Android Studio, or only the command-line SDK tools, run on macOS 12 Intel? (T1)~~ Command-line tools only; see `docs/DEVELOPMENT.md`
 - Does riverpod_lint use custom_lint or the analyzer plugin system in its current version? (T3)
 
 ---
 Created: 2026-10-06
-Last Updated: 2026-10-06
+Last Updated: 2026-10-07
 Status: Ready for Implementation

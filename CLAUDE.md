@@ -2,7 +2,7 @@
 
 ## Quick Reference
 - Project: Whitelabel Flutter app (Android + iOS) with offline kart track guidance; Drupal central app lives in a separate repo
-- Stack: Flutter 3.47 · Riverpod 3 · go_router · drift + SQLite3 Multiple Ciphers · dio · youtube_player_iframe (see DEC-010)
+- Stack: Flutter 3.38.10 (pinned, DEC-012) · Riverpod 3 · go_router · drift + SQLite3 Multiple Ciphers · dio · youtube_player_iframe (see DEC-010)
 - Commands: `flutter run` · `flutter test` · `flutter build apk` (iOS builds run on a GitHub Actions macOS runner, DEC-006)
 - Spec: `docs/specs/Track Guide – Project & Implementation Plan.md` · Design: `reference/prototype/` · ERD: `docs/database/mobile-erd.md`
 - Branch: `git branch --show-current`

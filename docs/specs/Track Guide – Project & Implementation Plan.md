@@ -72,7 +72,7 @@ Nothing below is built in v1, but the data model and API leave room for each ite
 
 Coaches work in Drupal; the app pulls everything through the `trackguide` API with a tenant-scoped JWT, stores it encrypted, and only reaches the internet for the daily license check, sync, feedback and YouTube playback.
 
-Stack choices: Flutter 3.47 with Riverpod 3 for state, go\_router for navigation, drift over SQLite3 Multiple Ciphers for storage, dio for HTTP, youtube\_player\_iframe for video, flutter\_secure\_storage for keys, and two small platform channels for FLAG\_SECURE and the iOS secure layer. Drupal 11 on PHP 8.3 with MariaDB, behind HTTPS on a managed host.
+Stack choices: Flutter 3.47 (pinned to 3.38.10 until a macOS 14+ development machine is available, DEC-012) with Riverpod 3 for state, go\_router for navigation, drift over SQLite3 Multiple Ciphers for storage, dio for HTTP, youtube\_player\_iframe for video, flutter\_secure\_storage for keys, and two small platform channels for FLAG\_SECURE and the iOS secure layer. Drupal 11 on PHP 8.3 with MariaDB, behind HTTPS on a managed host.
 
 ## Data model
 

@@ -182,3 +182,61 @@ OPEN QUESTIONS:
 - Does riverpod_lint use custom_lint or the analyzer plugin system now? (T3)
 - Schedule DST-001 directly after FND-001 (first iOS build)
 ================================================================================
+
+================================================================================
+[2026-10-07 15:10] SESSION END
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T1 - Development environment
+
+COMPLETED:
+- ISS-006 narrowed: logo_full.svg is a true vector and is enough for T6; other
+  logo variants still pending for THM-002 and DST-001
+- Flutter 3.38.10 (Dart 3.10.9) installed at ~/development/flutter (checksum verified)
+- Android SDK: emulator, android-36 platform, android-34 and android-36 system images;
+  Gradle added NDK and CMake on the first build; licenses were already accepted
+- ~/.zshrc: ANDROID_HOME and PATH (backup at ~/.zshrc.bak-2026-10-07)
+- AVD apexguide_pixel (Android 14, 720 x 1280); sample app built, installed and
+  responsive (counter taps verified by screenshot)
+- flutter doctor: Flutter and Android toolchain green; Xcode fails as expected
+- docs/DEVELOPMENT.md written (setup steps); FND-001 spec, CLAUDE.md, ARCHITECTURE.md
+  and the main spec updated for DEC-012
+
+IN PROGRESS:
+- FND-001 now in implementation; T2 next
+
+TESTS: n/a (environment task; no app code yet)
+
+DECISIONS: DEC-012 - Pin Flutter 3.38.10 until a macOS 14+ development machine;
+           amends DEC-010 package versions (go_router 17.5.0, very_good_analysis 10.1.0,
+           flutter_riverpod 3.3.2, others unchanged or patch-level)
+
+FILES CHANGED:
++ docs/DEVELOPMENT.md
+M .claude/memory/decisions.md (DEC-012; DEC-010 status)
+M .claude/memory/issues.md (ISS-007 new; ISS-006 updated)
+M .claude/memory/features.json
+M docs/specs/FND-001-spec.md
+M docs/specs/Track Guide – Project & Implementation Plan.md
+M docs/ARCHITECTURE.md
+M CLAUDE.md
+
+BLOCKERS: none for T2. ISS-007 (needs macOS 14+ hardware) is a known limitation.
+
+NEXT SESSION:
+- FND-001-T2: flutter create with app ID com.apexguide.app, minSdk 24, iOS 15, portrait lock
+- T3: riverpod_lint 3.1.4 - check custom_lint vs analyzer plugin system
+- DST-001: confirm Flutter 3.38.10 builds with the Xcode on GitHub macOS runners and
+  meets the App Store SDK requirement (Xcode 26 since 28 Apr 2026)
+- Owner: plan new Apple-silicon hardware, then upgrade to Flutter 3.47+ (DEC-012 notes)
+
+CONTEXT FOR NEXT SESSION:
+- Dart 3.11+ will not start on macOS 12; `dart --version` succeeds anyway, so test by
+  running a script, not by printing the version
+- Emulator: after a cold boot wait several minutes (load ~40) before installing;
+  "Broken pipe" from adb install means the system is not settled yet. Don't run a
+  Gradle build and a cold boot at the same time
+- adb is in $ANDROID_HOME/platform-tools; new shells pick up PATH from ~/.zshrc
+- SETUP.md is the boilerplate guide; app setup lives in docs/DEVELOPMENT.md
+
+Commit: (pending owner approval)
+================================================================================

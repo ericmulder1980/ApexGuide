@@ -218,7 +218,7 @@ The activation screen in the prototype (3a) offers "Continue in demo mode" for d
 
 ### DEC-010: App stack verified and pinned
 **Date:** 2026-10-05
-**Status:** Accepted
+**Status:** Accepted; framework and package versions amended by DEC-012 (2026-10-07)
 **Deciders:** Project owner
 **Related:** Supersedes DEC-002; resolves ISS-004; FND-001, FND-004, VID-001
 
@@ -289,6 +289,49 @@ FND-001 creates the Flutter project. Several choices are hard to change later (t
 **Consequences:**
 - iOS-specific problems (CocoaPods, the SQLite3 Multiple Ciphers native build, PRT-002) surface at DST-001, so DST-001 should be scheduled directly after FND-001
 - Devices below Android 7.0 or iOS 15 cannot install the app
+
+---
+
+### DEC-012: Pin Flutter 3.38.10 until there is a macOS 14+ development machine
+**Date:** 2026-10-07
+**Status:** Accepted
+**Deciders:** Project owner
+**Related:** Amends DEC-010 (framework and package versions); ISS-007; FND-001, DST-001
+
+**Context:**
+FND-001-T1 found that the Dart VM refuses to start on macOS 12 from Dart 3.11.0 onwards ("Current Mac OS X version 12.0 is lower than minimum supported version 14.0"), tested on the development machine for each Dart release from 3.8 to 3.13. Dart 3.10.x is the last line that runs, shipped with Flutter 3.38.x. The development machine (MacBook Pro 2016, MacBookPro13,2) cannot officially run anything newer than macOS 12.
+
+**Decision:**
+Use Flutter 3.38.10 (Dart 3.10.9) for development and CI until a macOS 14+ machine is available, with the newest package versions that support Dart 3.10:
+
+| Package | DEC-010 version | Version under DEC-012 |
+| --- | --- | --- |
+| Flutter | 3.47.x | 3.38.10 |
+| flutter_riverpod | 3.4.3 | 3.3.2 |
+| riverpod_annotation / riverpod_generator | 4.0.7 / 4.0.9 | 4.0.3 / 4.0.4 |
+| riverpod_lint | 3.1.9 | 3.1.4 |
+| go_router | 18.0.2 | 17.5.0 |
+| very_good_analysis | 11.0.0 | 10.1.0 |
+| build_runner | 2.16.2 | 2.15.1 |
+| drift / drift_dev, sqlite3, dio, youtube_player_iframe, flutter_secure_storage, flutter_launcher_icons | unchanged | unchanged |
+
+Versions checked on pub.dev on 2026-10-07; FND-001 pins the exact versions in `pubspec.yaml`.
+
+**Rationale:**
+- Development can start now on the existing machine
+- Every package keeps the major version chosen in DEC-010 except go_router (17 instead of 18) and very_good_analysis (10 instead of 11), so the later upgrade is small
+- One Flutter version across the dev machine and CI avoids "works on my machine" differences
+
+**Alternatives considered:**
+- Buy an Apple-silicon Mac now: the long-term fix, deferred by the owner
+- OpenCore Legacy Patcher to run macOS 14/15: unofficial, and the T1 chip in this model is only partly supported
+- Linux (dual boot or VM): supported for Android, but a weak emulator and a bigger change to the workflow
+
+**Consequences:**
+- Upgrade to Flutter 3.47+ once a macOS 14+ machine is available, preferably early while the codebase is small: `flutter pub upgrade --major-versions`, go_router 17 to 18 migration, new very_good_analysis lints, `dart fix --apply`, Flutter breaking changes for 3.41 to 3.47
+- Flutter 3.38 receives no further fixes
+- DST-001 must confirm that Flutter 3.38.10 builds with the Xcode on GitHub's macOS runners and meets Apple's current App Store SDK requirement
+- The emulator is slow on this machine: the first boot needs several minutes of background work, and the Android 16 Play Store image was unusable (ISS-007)
 
 ---
 

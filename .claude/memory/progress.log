@@ -354,3 +354,32 @@ NOTES:
 NEXT: FND-001-T6 - launcher icon from the A mark of logo_full.svg (flutter_launcher_icons
   0.14.4); check the red kerb stripes at 48 px (ISS-006)
 ================================================================================
+
+================================================================================
+[2026-10-07 15:40] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T6 - Launcher icon
+
+COMPLETED:
+- assets/icon/app_icon.svg: A mark subpaths (navy + red, y < 560) from logo_full.svg,
+  evenodd fill kept, ~76% of a white 1024 square; rendered to app_icon.png with
+  rsvg-convert (no alpha, as iOS requires)
+- assets/icon/app_icon_foreground.svg/.png: transparent, every point within 95% of the
+  adaptive-icon safe circle (66/108)
+- flutter_launcher_icons 0.14.4 (exact pin) with flutter_launcher_icons.yaml:
+  adaptive icon (white background, inset 0), legacy icons, iOS AppIcon set
+
+ISSUES FOUND:
+- flutter_launcher_icons 0.14.4 rewrites ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_
+  SYMBOL_EXTENSIONS = YES to "AppIcon" in project.pbxproj on every run; reverted, and
+  the yaml documents `git checkout -- ios/Runner.xcodeproj/project.pbxproj` after
+  regenerating
+- Default adaptive inset (16%) would shrink the pre-sized foreground; set to 0
+
+VERIFIED: icon legible in the emulator app drawer (circular mask) with label ApexGuide;
+  at 48 px the red kerb stripes blur into dashes but the A and racing line read (ISS-006)
+TESTS: 20/20 passing (no code changes)
+
+NEXT: FND-001-T7 - wrap-up: README commands, full analyze and test run, emulator smoke
+  test, memory update
+================================================================================

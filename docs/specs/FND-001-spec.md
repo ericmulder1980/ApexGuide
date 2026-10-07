@@ -105,7 +105,7 @@ LIC-006 adds the demo key here later. These files hold no secrets; signing keys 
 | build_runner | dev | 2.15.1 |
 | very_good_analysis | dev | 10.1.0 (DEC-012), pinned at T3 |
 | riverpod_lint | analyzer plugin | 3.1.4, under `plugins:` in `analysis_options.yaml` (not a dev dependency) |
-| flutter_launcher_icons | dev | 0.14.x, pinned at T6 |
+| flutter_launcher_icons | dev | 0.14.4 |
 
 These are the newest versions that resolve with Flutter 3.38.10, checked on 2026-10-07. Other DEC-010 packages are added by the features that need them.
 
@@ -162,7 +162,7 @@ Recorded as DEC-011: app ID, minimum versions, folder layout, Riverpod code gene
 
 6. **FND-001-T6**: Launcher icon
    - Description: Crop the "A" mark with racing line from `logo_full.svg` into a square SVG with a white background, render a 1024 × 1024 PNG, generate icons with flutter_launcher_icons (Android adaptive icon and iOS)
-   - Files: `assets/icon/app_icon.svg`, `assets/icon/app_icon.png`, `flutter_launcher_icons.yaml`, generated platform icon files
+   - Files: `assets/icon/app_icon.svg`, `assets/icon/app_icon.png`, `assets/icon/app_icon_foreground.svg`, `assets/icon/app_icon_foreground.png` (adaptive-icon foreground sized to the safe zone), `flutter_launcher_icons.yaml`, generated platform icon files
    - Tests: launcher icon visible and legible on the emulator home screen
    - Depends on: T2
    - Estimate: S

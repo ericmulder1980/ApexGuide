@@ -69,7 +69,7 @@
           { "id": "FND-001-T3", "title": "Lints: very_good_analysis and riverpod_lint", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T4", "title": "Riverpod with code generation, ProviderScope, AppConfig and config files", "estimate": "S", "depends_on": ["FND-001-T3"], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T5", "title": "go_router provider, route constants and placeholder screens with router tests", "estimate": "M", "depends_on": ["FND-001-T4"], "status": "complete", "completed": "2026-10-07" },
-          { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "pending" },
+          { "id": "FND-001-T6", "title": "Launcher icon from the A mark of logo_full.svg", "estimate": "S", "depends_on": ["FND-001-T2"], "status": "complete", "completed": "2026-10-07" },
           { "id": "FND-001-T7", "title": "Wrap-up: README commands, full analyze and test run, emulator smoke test, memory update", "estimate": "S", "depends_on": ["FND-001-T5", "FND-001-T6"], "status": "pending" }
         ]
       }

@@ -1,18 +1,18 @@
+import 'package:apexguide/app/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Root widget. FND-001-T5 replaces the placeholder home with go_router.
-class ApexGuideApp extends StatelessWidget {
+/// Root widget.
+class ApexGuideApp extends ConsumerWidget {
   /// Creates the root widget.
   const ApexGuideApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
       title: 'ApexGuide',
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(child: Text('ApexGuide')),
-      ),
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }

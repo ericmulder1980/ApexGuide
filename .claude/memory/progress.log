@@ -325,3 +325,32 @@ OPEN:
 NEXT: FND-001-T5 - go_router 17.5.0, routes.dart, router provider, placeholder screens,
   router tests
 ================================================================================
+
+================================================================================
+[2026-10-07 15:35] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T5 - Router and placeholder screens
+
+COMPLETED:
+- go_router 17.5.0 (exact pin, resolves with Flutter 3.38.10)
+- lib/app/routes.dart: Routes (paths, path parameter names, trackLocation and
+  cornerLocation helpers) and RouteNames
+- lib/app/router.dart: keepAlive routerProvider (codegen), nested
+  /tracks/:trackId/corners/:cornerNo, errorBuilder, router disposed with the provider;
+  LIC-003 adds `redirect` here
+- One placeholder screen per route under lib/features/<area>/presentation/ (start,
+  activation, sync, tracks, settings, license), sharing lib/core/widgets/placeholder_screen.dart
+- lib/app/route_error_screen.dart for unknown paths and a non-numeric corner number
+- ApexGuideApp is a ConsumerWidget using MaterialApp.router
+
+TESTS: 20/20 passing (router: every route, path parameters, unknown path, invalid corner
+  number; app: boots to /); flutter analyze clean
+VERIFIED ON EMULATOR: debug build with config/dev.json starts on the start screen
+
+NOTES:
+- Bash heredoc writing many files hit a transient auto-mode classifier error; the Write
+  tool per file worked
+
+NEXT: FND-001-T6 - launcher icon from the A mark of logo_full.svg (flutter_launcher_icons
+  0.14.4); check the red kerb stripes at 48 px (ISS-006)
+================================================================================

@@ -71,6 +71,22 @@ Pending: install Node (nodejs.org installer recommended) or clone flutter/skills
 
 ---
 
+### ISS-008: Production domain not chosen; apexguide.com is registered by someone else
+**Reported:** 2026-10-07
+**Status:** Open
+**Severity:** Medium
+**Related Feature:** FND-005, DST-001, DEC-011
+
+**Symptoms:**
+- `config/prod.json` has an empty `API_BASE_URL`; the owner's preferred host was `api.apexguide.com`.
+- whois (2026-10-07): apexguide.com registered 2016-12-09 via GoDaddy, expires 2027-12-09, transfer and delete locked; the apex domain resolves, `api.apexguide.com` does not.
+- The app ID `com.apexguide.app` (DEC-011) follows reverse-domain naming for a domain we do not own. The stores do not verify this, but the ID is permanent once published.
+
+**Resolution:**
+Pending: choose a domain (buy apexguide.com from its owner, or another TLD such as apexguide.app or apexguide.nl). Then set `API_BASE_URL` in `config/prod.json` before the first production build, and confirm or change the app ID before DST-001 publishes anything.
+
+---
+
 ### ISS-007: Development machine cannot run current Flutter, and the emulator is slow
 **Reported:** 2026-10-07
 **Status:** Open

@@ -98,16 +98,16 @@ LIC-006 adds the demo key here later. These files hold no secrets; signing keys 
 
 | Package | Kind | Version |
 | --- | --- | --- |
-| flutter_riverpod | dependency | 3.3.2 (DEC-012), pinned at T4 |
-| riverpod_annotation | dependency | 4.0.3, matching riverpod_generator |
+| flutter_riverpod | dependency | 3.1.0 (DEC-012) |
+| riverpod_annotation | dependency | 4.0.0, matching riverpod_generator |
 | go_router | dependency | 17.5.0 (DEC-012), pinned at T5 |
-| riverpod_generator | dev | 4.0.4, pinned at T4 |
-| build_runner | dev | 2.15.1, pinned at T4 |
+| riverpod_generator | dev | 4.0.0+1 (newest that resolves with Flutter 3.38's `meta` 1.17.0) |
+| build_runner | dev | 2.15.1 |
 | very_good_analysis | dev | 10.1.0 (DEC-012), pinned at T3 |
 | riverpod_lint | analyzer plugin | 3.1.4, under `plugins:` in `analysis_options.yaml` (not a dev dependency) |
 | flutter_launcher_icons | dev | 0.14.x, pinned at T6 |
 
-These are the newest versions that support Dart 3.10, checked on 2026-10-07. Other DEC-010 packages are added by the features that need them.
+These are the newest versions that resolve with Flutter 3.38.10, checked on 2026-10-07. Other DEC-010 packages are added by the features that need them.
 
 ### Key decisions
 

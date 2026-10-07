@@ -1,13 +1,12 @@
 import 'package:apexguide/app/app.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await lockPortrait();
-  // FND-001-T4 wraps the app in a ProviderScope and removes this ignore.
-  // ignore: riverpod_lint/missing_provider_scope
-  runApp(const ApexGuideApp());
+  runApp(const ProviderScope(child: ApexGuideApp()));
 }
 
 /// Locks the app to portrait. AndroidManifest.xml and Info.plist set the same

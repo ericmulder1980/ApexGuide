@@ -298,3 +298,30 @@ NOTES:
 NEXT: FND-001-T4 - flutter_riverpod 3.3.2, riverpod_annotation 4.0.3,
   riverpod_generator 4.0.4, build_runner 2.15.1, ProviderScope, AppConfig, config files
 ================================================================================
+
+================================================================================
+[2026-10-07 15:50] TASK COMPLETE
+Feature: FND-001 - Flutter project scaffold
+Task: FND-001-T4 - Riverpod, AppConfig and config files
+
+COMPLETED:
+- flutter_riverpod 3.1.0, riverpod_annotation 4.0.0, riverpod_generator 4.0.0+1,
+  build_runner 2.15.1 (exact pins). DEC-012's 3.3.2/4.0.3/4.0.4 do not resolve:
+  Flutter 3.38 pins meta 1.17.0, riverpod_generator 4.0.4+ needs analyzer 12 (meta 1.18).
+  DEC-012 and the FND-001 spec corrected
+- ProviderScope at the root; temporary missing_provider_scope ignore removed
+- lib/core/config/app_config.dart: AppConfig.fromEnvironment (API_BASE_URL,
+  USE_MOCK_API defaulting to true) and keepAlive appConfigProvider (codegen)
+- config/dev.json (http://10.0.2.2:8080, the host machine as seen from the Android
+  emulator; FND-005 confirms the mock API port) and config/prod.json (URL empty)
+- Generated app_config.g.dart committed so a fresh clone analyzes without build_runner
+
+TESTS: 8/8 passing; flutter analyze clean. With --dart-define-from-file=config/prod.json
+  the two environment tests fail as expected, proving the defines are read
+
+OPEN:
+- Production API_BASE_URL unknown; apexguide.com is taken (ISS-008). Set it before the first prod build
+
+NEXT: FND-001-T5 - go_router 17.5.0, routes.dart, router provider, placeholder screens,
+  router tests
+================================================================================

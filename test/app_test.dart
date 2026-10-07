@@ -1,11 +1,12 @@
 import 'package:apexguide/app/app.dart';
 import 'package:apexguide/main.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('ApexGuideApp renders the placeholder home', (tester) async {
-    await tester.pumpWidget(const ApexGuideApp());
+    await tester.pumpWidget(const ProviderScope(child: ApexGuideApp()));
 
     expect(find.text('ApexGuide'), findsOneWidget);
   });

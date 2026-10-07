@@ -309,15 +309,15 @@ Use Flutter 3.38.10 (Dart 3.10.9) for development and CI until a macOS 14+ machi
 | Package | DEC-010 version | Version under DEC-012 |
 | --- | --- | --- |
 | Flutter | 3.47.x | 3.38.10 |
-| flutter_riverpod | 3.4.3 | 3.3.2 |
-| riverpod_annotation / riverpod_generator | 4.0.7 / 4.0.9 | 4.0.3 / 4.0.4 |
+| flutter_riverpod | 3.4.3 | 3.1.0 (corrected from 3.3.2 at T4) |
+| riverpod_annotation / riverpod_generator | 4.0.7 / 4.0.9 | 4.0.0 / 4.0.0+1 (corrected from 4.0.3 / 4.0.4 at T4) |
 | riverpod_lint | 3.1.9 | 3.1.4 |
 | go_router | 18.0.2 | 17.5.0 |
 | very_good_analysis | 11.0.0 | 10.1.0 |
 | build_runner | 2.16.2 | 2.15.1 |
 | drift / drift_dev, sqlite3, dio, youtube_player_iframe, flutter_secure_storage, flutter_launcher_icons | unchanged | unchanged |
 
-Versions checked on pub.dev on 2026-10-07; FND-001 pins the exact versions in `pubspec.yaml`.
+Versions checked on pub.dev on 2026-10-07; FND-001 pins the exact versions in `pubspec.yaml`. Correction at FND-001-T4: the first check only compared Dart SDK constraints. Flutter 3.38 pins `meta` 1.17.0 through flutter_test, and riverpod_generator 4.0.4+ needs analyzer 12 (meta 1.18), so pub resolves riverpod_generator 4.0.0+1, which locks riverpod_annotation 4.0.0 and flutter_riverpod 3.1.0. riverpod_lint 3.1.4 runs as an analyzer plugin in its own environment and is unaffected.
 
 **Rationale:**
 - Development can start now on the existing machine

@@ -31,7 +31,7 @@ gradle.taskGraph.whenReady {
 }
 
 android {
-    namespace = "com.apexguide.app"
+    namespace = "nl.webmiller.apexguide"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -45,8 +45,8 @@ android {
     }
 
     defaultConfig {
-        // Permanent once published (DEC-011).
-        applicationId = "com.apexguide.app"
+        // Permanent once published (DEC-014).
+        applicationId = "nl.webmiller.apexguide"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24

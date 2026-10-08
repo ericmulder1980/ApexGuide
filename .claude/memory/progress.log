@@ -509,3 +509,32 @@ RESEARCH (2026-10-07):
 NEXT:
 - T1 app ID change, then T2 account checklist for the owner; T3/T4/T5 while accounts verify
 ================================================================================
+
+================================================================================
+[2026-10-08] TASK COMPLETE
+Feature: DST-001 - Pilot builds: signed APK and TestFlight
+Task: DST-001-T1 - App ID nl.webmiller.apexguide on Android and iOS (DEC-014)
+Branch: feature/DST-001
+
+COMPLETED:
+- Android namespace and applicationId nl.webmiller.apexguide; gradle comment now cites DEC-014
+- MainActivity moved to kotlin/nl/webmiller/apexguide/ (git mv, package updated)
+- iOS PRODUCT_BUNDLE_IDENTIFIER nl.webmiller.apexguide (Runner) and
+  nl.webmiller.apexguide.RunnerTests in all build configurations
+- Historical records (FND-001 spec, DEC-011) left unchanged on purpose
+
+VERIFIED: flutter analyze clean; flutter test 21/21; debug APK built, aapt2 badging shows
+  package nl.webmiller.apexguide and launchable activity nl.webmiller.apexguide.MainActivity
+  (iOS change verified by the T5 build check)
+
+FILES CHANGED:
+M android/app/build.gradle.kts
+R android/app/src/main/kotlin/{com/apexguide/app -> nl/webmiller/apexguide}/MainActivity.kt
+M ios/Runner.xcodeproj/project.pbxproj
+
+NOTE: an existing emulator install under com.apexguide.app is now a separate app; uninstall it
+
+NEXT:
+- Owner: T2 developer accounts (long lead time); T3 signing key
+- Claude: T5 ios-build-check.yml (no account needed), then T4 after T3
+================================================================================

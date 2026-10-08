@@ -1,4 +1,4 @@
-package com.apexguide.app
+package nl.webmiller.apexguide
 
 import io.flutter.embedding.android.FlutterActivity
 

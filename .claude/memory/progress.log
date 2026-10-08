@@ -538,3 +538,28 @@ NEXT:
 - Owner: T2 developer accounts (long lead time); T3 signing key
 - Claude: T5 ios-build-check.yml (no account needed), then T4 after T3
 ================================================================================
+
+================================================================================
+[2026-10-08] TASK PROGRESS
+Feature: DST-001 - Pilot builds: signed APK and TestFlight
+Task: DST-001-T3 - Android app signing key, key.properties, GitHub environment release
+
+OWNER: Apple Developer and Google Play developer accounts created (T2, verification status
+  not recorded); app signing key generated with keytool outside the repo
+  (~/Keys/apexguide/apexguide-release.jks, PKCS12, RSA 4096, alias apexguide, ~30 years);
+  android/key.properties created (git-ignored, chmod 600)
+
+COMPLETED:
+- Root .gitignore now ignores *.jks, *.keystore and key.properties anywhere
+- Release APK built locally (prod.json, --obfuscate, --split-debug-info); apksigner verifies
+  (v2 scheme, enough for minSdk 24); package nl.webmiller.apexguide
+
+SIGNING CERTIFICATE (public, needed for Android developer verification and Play):
+  DN: CN=WebMiller, O=WebMiller, C=NL
+  SHA-256: 90:2B:8E:32:78:27:40:0A:BB:54:09:AC:46:34:50:61:F8:4F:DB:C4:48:FF:46:1A:65:27:AD:DC:75:F1:3F:91
+  SHA-1:   3E:27:44:DB:6E:35:ED:02:1B:E4:FB:32:B1:85:1F:13:F1:A0:8D:A3
+
+OPEN IN T3: GitHub environment release (required reviewer owner, branches main +
+  feature/DST-001) and its four ANDROID_* secrets; confirm the offline key backup
+DOCS (T7): DEVELOPMENT.md still says alias "upload" and "upload key"; update to app signing key
+================================================================================

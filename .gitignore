@@ -48,6 +48,9 @@ app.*.map.json
 /android/app/release
 
 # Signing keys and credentials (never commit)
+*.jks
+*.keystore
+key.properties
 *.p12
 *.pem
 *.mobileprovision

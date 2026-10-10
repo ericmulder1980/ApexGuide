@@ -139,18 +139,33 @@ jobs:
         env:
           APK_NAME: ${{ steps.version.outputs.apk }}
         run: |
-          build_tools=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          # Pinned: the same build-tools version is used locally, so the
+          # apksigner and aapt2 output formats parsed here are known.
+          build_tools="$ANDROID_HOME/build-tools/36.0.0"
           apk=build/app/outputs/flutter-apk/app-release.apk
+          if [ ! -x "$build_tools/apksigner" ]; then
+            echo "::error::Build-tools 36.0.0 not found. Installed: $(ls "$ANDROID_HOME/build-tools" | tr '\n' ' ')"
+            exit 1
+          fi
 
-          "$build_tools/apksigner" verify --verbose --print-certs "$apk" | tee apksigner.txt
-          signers=$(grep -c '^Signer #[0-9]* certificate SHA-256 digest:' apksigner.txt)
+          if ! "$build_tools/apksigner" verify --verbose --print-certs "$apk" > apksigner.txt 2>&1; then
+            cat apksigner.txt
+            echo "::error::apksigner verify failed: $(grep -v '^WARNING' apksigner.txt | head -3 | tr '\n' ' ')"
+            exit 1
+          fi
+          grep -v '^WARNING' apksigner.txt || true
+          signers=$(grep -c '^Signer #[0-9]* certificate SHA-256 digest:' apksigner.txt || true)
           cert=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' apksigner.txt)
           if [ "$signers" != "1" ] || [ "$cert" != "$EXPECTED_CERT_SHA256" ]; then
             echo "::error::APK is not signed with the app signing key (signers: $signers, certificate: $cert)"
             exit 1
           fi
 
-          package=$("$build_tools/aapt2" dump badging "$apk" | sed -n "s/^package: name='\([^']*\)'.*/\1/p")
+          if ! "$build_tools/aapt2" dump badging "$apk" > badging.txt 2>&1; then
+            echo "::error::aapt2 dump badging failed: $(head -3 badging.txt | tr '\n' ' ')"
+            exit 1
+          fi
+          package=$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" badging.txt)
           if [ "$package" != "$EXPECTED_PACKAGE" ]; then
             echo "::error::Unexpected package name: $package"
             exit 1

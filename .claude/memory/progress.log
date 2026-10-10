@@ -650,3 +650,8 @@ Feature: DST-001 - Task: DST-001-T4 - android-release.yml
   Fixed: job output 'apk' was dropped by GitHub because it contains the key alias secret
   ("apexguide"); publish job now derives the file name. Pinned ubuntu-24.04 (ubuntu-latest
   moves to Ubuntu 26 from 2026-10-19). Fix pushed to feature/DST-001 only; main gets it on merge
+- [2026-10-10] T4 run #2 (5c1800f): secrets OK, signed build OK (~3.5 min), failed in
+  "Verify signature and package" with no ::error annotation (a tool exited non-zero before
+  the checks; logs need auth). Unpinned build-tools resolved to 37.0.0 (untested). Fix:
+  pin build-tools 36.0.0 (local + runner), explicit ::error per tool, grep -c || true.
+  Dry-run passes on the signed release APK and rejects the debug APK. Root cause unconfirmed

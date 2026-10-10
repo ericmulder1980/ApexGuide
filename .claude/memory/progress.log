@@ -586,3 +586,40 @@ T2: accounts created; Android developer verification registration (SHA-256 in th
 
 NEXT: T4 android-release.yml, T5 ios-build-check.yml
 ================================================================================
+
+================================================================================
+[2026-10-10] TASK COMPLETE
+Feature: DST-001 - Pilot builds: signed APK and TestFlight
+Task: DST-001-T5 - ios-build-check.yml
+
+COMPLETED:
+- .github/workflows/ios-build-check.yml: workflow_dispatch only, Xcode and config as choice
+  inputs (default 26.3, config/prod.json), contents: read, persist-credentials false,
+  actions pinned by SHA (checkout v7.0.1, subosito/flutter-action v2.23.0), no cache
+- Linted with actionlint 1.7.12 (1.7.7 does not know the macos-26 label)
+- Workflow commit cherry-picked to main (28e83c4) so the Run workflow button appears;
+  owner's choice. GitHub only offers workflow_dispatch for files on the default branch
+- Run 38040702732 (feature/DST-001 @ ee901d6, Xcode 26.3): all steps passed in ~5 min.
+  RISK RETIRED: Flutter 3.38.10 builds for iOS with Xcode 26.3 on macos-26.
+  Only annotation: GitHub notice about macOS arm64 queue capacity
+
+NOTE: job logs and step summaries need an authenticated API call (403 via curl);
+  run/job/step status and annotations are public
+
+NEXT: T4 android-release.yml; T6 needs the Apple account (certificate, profile, API key)
+================================================================================
+
+================================================================================
+[2026-10-10] T2 PROGRESS
+Feature: DST-001 - Task: DST-001-T2 - Developer accounts
+
+- Apple Developer Program active: enrolled as Individual, Team ID Q5GMY36WUC
+  (Team ID is not secret; T6 uses it for signing, the provisioning profile and ExportOptions)
+- Still open (owner): Play Console account type and verification status; Android developer
+  verification registration of nl.webmiller.apexguide with the SHA-256 from 2026-10-08
+- T6 is unblocked on the Apple side
+================================================================================
+- [2026-10-10] Google Play: PERSONAL account; identity verification pending (several days).
+  Package registration for Android developer verification follows identity approval.
+  Personal account => DST-002 needs a closed test with 12+ testers opted in for 14
+  consecutive days before production access (third-party sources, verify in Play Help)

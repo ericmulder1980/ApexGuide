@@ -563,3 +563,26 @@ OPEN IN T3: GitHub environment release (required reviewer owner, branches main +
   feature/DST-001) and its four ANDROID_* secrets; confirm the offline key backup
 DOCS (T7): DEVELOPMENT.md still says alias "upload" and "upload key"; update to app signing key
 ================================================================================
+
+================================================================================
+[2026-10-10] TASK COMPLETE
+Feature: DST-001 - Pilot builds: signed APK and TestFlight
+Task: DST-001-T3 - Android app signing key, key.properties, GitHub environment release
+
+COMPLETED:
+- Owner backed up the app signing key (password manager + offline copy)
+- GitHub environment release created in the web UI; verified via the public REST API:
+  required reviewer ericmulder1980, prevent self-review off, custom branch policies
+  main and feature/* (suggested narrowing feature/* to feature/DST-001; owner's call)
+- Owner added ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS,
+  ANDROID_KEY_PASSWORD (names confirmed by owner; not verifiable without auth)
+
+CONSTRAINT: gh CLI does not run on this macOS version (Darwin 21). Workflows must be
+  usable from the web UI only (workflow_dispatch from the Actions tab, browser approval);
+  read-only checks via curl against the public API
+
+T2: accounts created; Android developer verification registration (SHA-256 in the
+  2026-10-08 entry) and Apple/Google verification status still to confirm
+
+NEXT: T4 android-release.yml, T5 ios-build-check.yml
+================================================================================

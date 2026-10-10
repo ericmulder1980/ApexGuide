@@ -1,7 +1,7 @@
 {
   "project": "ApexGuide",
   "version": "0.1.0",
-  "last_updated": "2026-10-08",
+  "last_updated": "2026-10-10",
   "metadata": {
     "created": "2026-10-02",
     "initialized_by": "user",
@@ -516,10 +516,10 @@
       "implementation": {
         "tasks": [
           { "id": "DST-001-T1", "title": "App ID nl.webmiller.apexguide on Android and iOS (DEC-014)", "estimate": "S", "depends_on": [], "status": "complete", "completed": "2026-10-08" },
-          { "id": "DST-001-T2", "title": "Developer accounts: Apple individual enrollment, D-U-N-S lookup, Google Play Console, Android developer verification (owner)", "estimate": "L", "depends_on": ["DST-001-T1"], "status": "pending" },
-          { "id": "DST-001-T3", "title": "Android app signing key created by the owner; key.properties; GitHub environment release", "estimate": "S", "depends_on": ["DST-001-T1"], "status": "pending" },
+          { "id": "DST-001-T2", "title": "Developer accounts: Apple individual enrollment, D-U-N-S lookup, Google Play Console, Android developer verification (owner)", "estimate": "L", "depends_on": ["DST-001-T1"], "status": "in_progress", "note": "Apple and Google developer accounts created 2026-10-08; verification status and Android developer verification registration not yet confirmed" },
+          { "id": "DST-001-T3", "title": "Android app signing key created by the owner; key.properties; GitHub environment release", "estimate": "S", "depends_on": ["DST-001-T1"], "status": "complete", "completed": "2026-10-10" },
           { "id": "DST-001-T4", "title": "android-release.yml: analyze, test, obfuscated signed APK, apksigner verify, GitHub pre-release", "estimate": "M", "depends_on": ["DST-001-T3"], "status": "pending" },
-          { "id": "DST-001-T5", "title": "ios-build-check.yml: unsigned iOS release build on macos-26 with Xcode 26.3", "estimate": "M", "depends_on": ["DST-001-T1"], "status": "pending" },
+          { "id": "DST-001-T5", "title": "ios-build-check.yml: unsigned iOS release build on macos-26 with Xcode 26.3", "estimate": "M", "depends_on": ["DST-001-T1"], "status": "in_progress", "note": "Workflow written and linted (actionlint 1.7.12); first run on GitHub pending" },
           { "id": "DST-001-T6", "title": "iOS signing, export compliance, ios-testflight.yml upload to TestFlight", "estimate": "L", "depends_on": ["DST-001-T2", "DST-001-T5"], "status": "pending" },
           { "id": "DST-001-T7", "title": "Wrap-up: DEC-013/LICENSE wording, README and DEVELOPMENT.md release sections, resolve ISS-002, memory", "estimate": "S", "depends_on": ["DST-001-T4", "DST-001-T6"], "status": "pending" }
         ]

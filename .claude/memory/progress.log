@@ -623,3 +623,23 @@ Feature: DST-001 - Task: DST-001-T2 - Developer accounts
   Package registration for Android developer verification follows identity approval.
   Personal account => DST-002 needs a closed test with 12+ testers opted in for 14
   consecutive days before production access (third-party sources, verify in Play Help)
+
+================================================================================
+[2026-10-10] TASK PROGRESS
+Feature: DST-001 - Task: DST-001-T4 - android-release.yml
+
+- Two jobs: build (environment release, contents: read, secrets) and publish
+  (contents: write, no secrets, gh release create). Secrets checked up front; key written
+  to RUNNER_TEMP and removed with if: always(); verify exactly one signer with the
+  expected certificate SHA-256 and package nl.webmiller.apexguide; tag pilot-v<ver>-<run>
+- Pinned: checkout v7.0.1, flutter-action v2.23.0, upload-artifact v7.0.1,
+  download-artifact v8.0.1 (skipped releases from 2026-10-07 as too new); no setup-java
+  (runner Java 17)
+- OWNER DECISION: debug symbols uploaded only encrypted (public repo artifacts are
+  downloadable by any GitHub user): openssl enc aes-256-cbc pbkdf2 600k, new secret
+  ANDROID_SYMBOLS_PASSWORD; decrypt steps in docs/DEVELOPMENT.md (needs Homebrew openssl@3,
+  macOS LibreSSL 2.8 lacks -pbkdf2). Deviates from spec's plain artifact; note in T7
+- OWNER DECISION: workflow commit cherry-picked to main, as for T5
+- Local checks: actionlint 1.7.12 clean; signature/package checks pass on the 2026-10-08
+  release APK and reject the debug APK; encrypt/decrypt round trip OK
+================================================================================

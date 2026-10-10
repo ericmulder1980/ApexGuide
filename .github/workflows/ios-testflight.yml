@@ -1,0 +1,333 @@
+# Signed iOS build uploaded to TestFlight (DST-001-T6).
+#
+# Manual trigger only (DEC-015): the repository is public, so no push,
+# pull_request or pull_request_target triggers. The job reads the signing
+# secrets from the protected environment `release`, so every run waits for the
+# owner's approval. Signing material lives only in a temporary keychain and
+# RUNNER_TEMP and is removed at the end of the job, also on failure.
+name: iOS TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      xcode:
+        description: Xcode version on the macos-26 image (26.3 passed the build check)
+        type: choice
+        default: "26.3"
+        options:
+          - "26.3"
+          - "26.2"
+          - "26.4.1"
+          - "26.5"
+          - "26.6"
+      config:
+        description: Build config file passed to --dart-define-from-file
+        type: choice
+        default: config/prod.json
+        options:
+          - config/prod.json
+          - config/dev.json
+
+permissions: {}
+
+concurrency:
+  group: ios-testflight
+  cancel-in-progress: false
+
+env:
+  # Identifiers, not credentials (DEC-014, DEC-015).
+  TEAM_ID: Q5GMY36WUC
+  BUNDLE_ID: nl.webmiller.apexguide
+  APP_APPLE_ID: "6821441474"
+  PROFILE_NAME: ApexGuide App Store
+  ASC_ISSUER_ID: 472098bd-b4b4-463c-bef5-ed37fea421ca
+
+jobs:
+  testflight:
+    name: Build and upload to TestFlight (Xcode ${{ inputs.xcode }})
+    runs-on: macos-26
+    timeout-minutes: 60
+    environment: release
+    permissions:
+      contents: read
+    env:
+      XCODE_VERSION: ${{ inputs.xcode }}
+      BUILD_CONFIG: ${{ inputs.config }}
+    steps:
+      - name: Check out
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Check signing secrets
+        env:
+          IOS_DIST_CERT_P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
+          IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          ASC_API_KEY_P8_BASE64: ${{ secrets.ASC_API_KEY_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ANDROID_SYMBOLS_PASSWORD: ${{ secrets.ANDROID_SYMBOLS_PASSWORD }}
+        run: |
+          missing=0
+          for name in IOS_DIST_CERT_P12_BASE64 IOS_DIST_CERT_PASSWORD IOS_PROVISIONING_PROFILE_BASE64 \
+                      ASC_API_KEY_P8_BASE64 ASC_KEY_ID ANDROID_SYMBOLS_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Secret $name is not set in the release environment"
+              missing=1
+            fi
+          done
+          if ! [[ "$ASC_ISSUER_ID" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+            echo "::error::ASC_ISSUER_ID in the workflow is not a valid Issuer ID"
+            missing=1
+          fi
+          exit "$missing"
+
+      - name: Select Xcode
+        run: |
+          app="/Applications/Xcode_${XCODE_VERSION}.app"
+          if [ ! -d "$app" ]; then
+            echo "::error::Xcode ${XCODE_VERSION} is not on this image. Installed:"
+            ls -d /Applications/Xcode_*.app
+            exit 1
+          fi
+          sudo xcode-select --switch "$app/Contents/Developer"
+          xcodebuild -version
+
+      - name: Set up Flutter 3.38.10
+        # subosito/flutter-action v2.23.0
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+        with:
+          channel: stable
+          flutter-version: 3.38.10
+
+      - name: Version
+        id: version
+        run: |
+          version=$(sed -n 's/^version: *\([0-9][0-9.]*\).*/\1/p' pubspec.yaml)
+          if [ -z "$version" ]; then
+            echo "::error::No version found in pubspec.yaml"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+      - name: Install signing certificate and profile
+        env:
+          P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+          PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          umask 077
+          echo "KEYCHAIN_PATH=$RUNNER_TEMP/signing.keychain-db" >> "$GITHUB_ENV"
+          KEYCHAIN_PATH="$RUNNER_TEMP/signing.keychain-db"
+          p12="$RUNNER_TEMP/distribution.p12"
+          profile="$RUNNER_TEMP/profile.mobileprovision"
+          printf '%s' "$P12_BASE64" | base64 --decode > "$p12"
+          printf '%s' "$PROFILE_BASE64" | base64 --decode > "$profile"
+
+          # Temporary keychain with a random password that never leaves this step.
+          keychain_password=$(openssl rand -base64 32)
+          echo "::add-mask::$keychain_password"
+          security create-keychain -p "$keychain_password" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$keychain_password" "$KEYCHAIN_PATH"
+          if ! security import "$p12" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"; then
+            echo "::error::Could not import the distribution certificate (wrong IOS_DIST_CERT_PASSWORD, or a .p12 not exported from Keychain Access)"
+            exit 1
+          fi
+          security set-key-partition-list -S apple-tool:,apple: -k "$keychain_password" "$KEYCHAIN_PATH" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          rm -f "$p12"
+
+          identities=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH")
+          echo "$identities"
+          if ! grep -q "Apple Distribution: .* ($TEAM_ID)" <<< "$identities"; then
+            echo "::error::No valid Apple Distribution identity for team $TEAM_ID in the certificate"
+            exit 1
+          fi
+
+          # Check the profile before installing it.
+          security cms -D -i "$profile" > "$RUNNER_TEMP/profile.plist"
+          name=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$RUNNER_TEMP/profile.plist")
+          app_id=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$RUNNER_TEMP/profile.plist")
+          uuid=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$RUNNER_TEMP/profile.plist")
+          expires=$(/usr/libexec/PlistBuddy -c 'Print :ExpirationDate' "$RUNNER_TEMP/profile.plist")
+          echo "Profile: $name ($uuid), $app_id, expires $expires"
+          if [ "$name" != "$PROFILE_NAME" ] || [ "$app_id" != "$TEAM_ID.$BUNDLE_ID" ]; then
+            echo "::error::Provisioning profile mismatch: '$name' for $app_id"
+            exit 1
+          fi
+          for dir in "$HOME/Library/MobileDevice/Provisioning Profiles" \
+                     "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+            mkdir -p "$dir"
+            cp "$profile" "$dir/$uuid.mobileprovision"
+          done
+          rm -f "$profile" "$RUNNER_TEMP/profile.plist"
+
+      - name: Write export options
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>destination</key>
+            <string>export</string>
+            <key>teamID</key>
+            <string>${TEAM_ID}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>signingCertificate</key>
+            <string>Apple Distribution</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>${BUNDLE_ID}</key>
+              <string>${PROFILE_NAME}</string>
+            </dict>
+            <key>manageAppVersionAndBuildNumber</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+          plutil -lint "$RUNNER_TEMP/ExportOptions.plist"
+
+      - name: Build signed IPA
+        run: |
+          flutter build ipa --release \
+            --obfuscate --split-debug-info=build/symbols \
+            --dart-define-from-file="$BUILD_CONFIG" \
+            --build-number="$GITHUB_RUN_NUMBER" \
+            --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
+
+      - name: Verify IPA
+        id: ipa
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          shopt -s nullglob
+          ipas=(build/ios/ipa/*.ipa)
+          if [ "${#ipas[@]}" != "1" ]; then
+            echo "::error::Expected one IPA in build/ios/ipa, found ${#ipas[@]}"
+            exit 1
+          fi
+          ipa="${ipas[0]}"
+          check="$RUNNER_TEMP/ipa-check"
+          rm -rf "$check" && mkdir -p "$check"
+          unzip -q "$ipa" -d "$check"
+          app=("$check"/Payload/*.app)
+          plist="${app[0]}/Info.plist"
+
+          bundle_id=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$plist")
+          short=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$plist")
+          build=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$plist")
+          encryption=$(/usr/libexec/PlistBuddy -c 'Print :ITSAppUsesNonExemptEncryption' "$plist" 2>/dev/null || echo missing)
+          signature=$(codesign -dvv "${app[0]}" 2>&1)
+          echo "$signature" | grep -E '^(Identifier|Authority|TeamIdentifier)='
+
+          errors=0
+          [ "$bundle_id" = "$BUNDLE_ID" ] || { echo "::error::Bundle ID is $bundle_id"; errors=1; }
+          [ "$short" = "$VERSION" ] || { echo "::error::Version is $short, expected $VERSION"; errors=1; }
+          [ "$build" = "$GITHUB_RUN_NUMBER" ] || { echo "::error::Build number is $build, expected $GITHUB_RUN_NUMBER"; errors=1; }
+          [ "$encryption" = "false" ] || { echo "::error::ITSAppUsesNonExemptEncryption is $encryption"; errors=1; }
+          grep -q "^Authority=Apple Distribution: .* ($TEAM_ID)$" <<< "$signature" \
+            || { echo "::error::IPA is not signed with the Apple Distribution certificate"; errors=1; }
+          grep -q "^TeamIdentifier=$TEAM_ID$" <<< "$signature" \
+            || { echo "::error::IPA team identifier is not $TEAM_ID"; errors=1; }
+          codesign --verify --deep --strict "${app[0]}" || { echo "::error::codesign --verify failed"; errors=1; }
+          rm -rf "$check"
+          [ "$errors" = "0" ] || exit 1
+
+          echo "path=$ipa" >> "$GITHUB_OUTPUT"
+
+      - name: Install App Store Connect API key
+        env:
+          P8_BASE64: ${{ secrets.ASC_API_KEY_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          umask 077
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          printf '%s' "$P8_BASE64" | base64 --decode > "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+
+      - name: Validate with App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          IPA: ${{ steps.ipa.outputs.path }}
+        run: |
+          xcrun altool --validate-app -f "$IPA" --type ios \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --output-format normal
+
+      - name: Upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          IPA: ${{ steps.ipa.outputs.path }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          xcrun altool --upload-package "$IPA" --type ios \
+            --apple-id "$APP_APPLE_ID" --bundle-id "$BUNDLE_ID" \
+            --bundle-version "$GITHUB_RUN_NUMBER" --bundle-short-version-string "$VERSION" \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --output-format normal
+
+      - name: Remove signing material
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/signing.keychain-db" 2>/dev/null || true
+          rm -rf "$HOME/.appstoreconnect/private_keys" \
+                 "$HOME/Library/MobileDevice/Provisioning Profiles" \
+                 "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles" \
+                 "$RUNNER_TEMP/distribution.p12" "$RUNNER_TEMP/profile.mobileprovision" \
+                 "$RUNNER_TEMP/profile.plist" "$RUNNER_TEMP/ExportOptions.plist"
+
+      # Artifacts of a public repository can be downloaded by any GitHub user,
+      # and the symbols undo the obfuscation, so they are only uploaded
+      # encrypted, with the same password as the Android symbols
+      # (docs/DEVELOPMENT.md).
+      - name: Encrypt debug symbols
+        env:
+          SYMBOLS_PASSWORD: ${{ secrets.ANDROID_SYMBOLS_PASSWORD }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mkdir -p dist
+          file="dist/ios-debug-symbols-v${VERSION}-${GITHUB_RUN_NUMBER}.tar.gz.enc"
+          tar -czf - -C build symbols \
+            | openssl enc -aes-256-cbc -salt -pbkdf2 -iter 600000 \
+                -pass env:SYMBOLS_PASSWORD -out "$file"
+          rm -rf build/symbols
+          echo "SYMBOLS_FILE=$file" >> "$GITHUB_ENV"
+
+      - name: Upload encrypted debug symbols
+        # actions/upload-artifact v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ios-debug-symbols-v${{ steps.version.outputs.version }}-${{ github.run_number }}
+          path: ${{ env.SYMBOLS_FILE }}
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Summary
+        if: always()
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          {
+            echo "### iOS TestFlight"
+            echo ""
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Version | ${VERSION:-n/a} (build ${GITHUB_RUN_NUMBER}) |"
+            echo "| Xcode | $(xcodebuild -version | head -1) |"
+            echo "| Config | ${BUILD_CONFIG} |"
+            echo "| Result | ${{ job.status }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

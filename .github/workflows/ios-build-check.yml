@@ -1,0 +1,105 @@
+# Unsigned iOS release build on a GitHub-hosted macOS runner (DST-001-T5).
+# Proves that Flutter 3.38.10 (DEC-012) builds with Xcode 26, which App Store
+# uploads require since 28 April 2026. Needs no Apple account or secrets.
+#
+# Manual trigger only (DEC-015): the repository is public, so no push,
+# pull_request or pull_request_target triggers.
+name: iOS build check
+
+on:
+  workflow_dispatch:
+    inputs:
+      xcode:
+        description: Xcode version on the macos-26 image (26.3 first, see DST-001 spec)
+        type: choice
+        default: "26.3"
+        options:
+          - "26.3"
+          - "26.2"
+          - "26.4.1"
+          - "26.5"
+          - "26.6"
+      config:
+        description: Build config file passed to --dart-define-from-file
+        type: choice
+        default: config/prod.json
+        options:
+          - config/prod.json
+          - config/dev.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-build-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: flutter build ios (Xcode ${{ inputs.xcode }})
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      XCODE_VERSION: ${{ inputs.xcode }}
+      BUILD_CONFIG: ${{ inputs.config }}
+    steps:
+      - name: Check out
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Select Xcode
+        run: |
+          app="/Applications/Xcode_${XCODE_VERSION}.app"
+          if [ ! -d "$app" ]; then
+            echo "::error::Xcode ${XCODE_VERSION} is not on this image. Installed:"
+            ls -d /Applications/Xcode_*.app
+            exit 1
+          fi
+          sudo xcode-select --switch "$app/Contents/Developer"
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Set up Flutter 3.38.10
+        # subosito/flutter-action v2.23.0
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+        with:
+          channel: stable
+          flutter-version: 3.38.10
+
+      - name: Toolchain versions
+        run: |
+          flutter --version
+          pod --version
+          flutter doctor -v
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+      - name: Build iOS release (unsigned)
+        run: |
+          flutter build ios --release --no-codesign \
+            --dart-define-from-file="$BUILD_CONFIG" \
+            --build-number="$GITHUB_RUN_NUMBER"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### iOS build check"
+            echo ""
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Xcode | $(xcodebuild -version | head -1) |"
+            echo "| iOS SDK | $(xcrun --sdk iphoneos --show-sdk-version) |"
+            echo "| Flutter | $(flutter --version 2>/dev/null | head -1 || echo n/a) |"
+            echo "| Config | ${BUILD_CONFIG} |"
+            echo "| Result | ${{ job.status }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

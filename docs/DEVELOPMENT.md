@@ -111,3 +111,15 @@ storeFile=/absolute/path/to/upload-keystore.jks
 ```
 
 DST-001 creates the upload key and sets up Play App Signing.
+
+### Debug symbols of pilot builds
+
+The `Android release` workflow builds with `--obfuscate`, so Dart stack traces from pilot builds are unreadable without the symbols. Workflow artifacts of a public repository can be downloaded by any GitHub user, so the workflow uploads the symbols only encrypted (AES-256-CBC, PBKDF2 with 600,000 iterations), with the password from the `ANDROID_SYMBOLS_PASSWORD` secret in the `release` environment. Artifacts expire after 90 days.
+
+Download the `debug-symbols-pilot-v<version>-<run>` artifact from the workflow run, then decrypt with OpenSSL 3 (macOS ships LibreSSL 2.8, which lacks `-pbkdf2`; use Homebrew's `openssl@3`). The command asks for the password:
+
+```bash
+/usr/local/opt/openssl@3/bin/openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 \
+  -in debug-symbols-pilot-v1.0.0-1.tar.gz.enc | tar -xzf -
+flutter symbolize -i stacktrace.txt -d symbols/app.android-arm64.symbols
+```

@@ -643,3 +643,10 @@ Feature: DST-001 - Task: DST-001-T4 - android-release.yml
 - Local checks: actionlint 1.7.12 clean; signature/package checks pass on the 2026-10-08
   release APK and reject the debug APK; encrypt/decrypt round trip OK
 ================================================================================
+
+- [2026-10-10] T4 first run (fbd63cc) stopped at "Check signing secrets": only
+  ANDROID_KEYSTORE_BASE64 not found (other four present; environment + approval worked).
+  Owner to re-add it under Environments -> release with the exact name.
+  Fixed: job output 'apk' was dropped by GitHub because it contains the key alias secret
+  ("apexguide"); publish job now derives the file name. Pinned ubuntu-24.04 (ubuntu-latest
+  moves to Ubuntu 26 from 2026-10-19). Fix pushed to feature/DST-001 only; main gets it on merge

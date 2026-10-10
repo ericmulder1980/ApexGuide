@@ -29,11 +29,13 @@ env:
   # The build fails if the APK is signed with any other key.
   EXPECTED_CERT_SHA256: 902b8e327827400abb5409ac46345061f84fdbc448ff461a6527addc75f13f91
   EXPECTED_PACKAGE: nl.webmiller.apexguide
+# Runners pinned to ubuntu-24.04: ubuntu-latest moves to Ubuntu 26 from
+# 2026-10-19, and Flutter is pinned to 3.38.10 (DEC-012).
 
 jobs:
   build:
     name: Build signed APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     environment: release
     permissions:
@@ -41,7 +43,6 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       tag: ${{ steps.version.outputs.tag }}
-      apk: ${{ steps.version.outputs.apk }}
       apk_sha256: ${{ steps.verify.outputs.apk_sha256 }}
     env:
       BUILD_CONFIG: ${{ inputs.config }}
@@ -193,7 +194,7 @@ jobs:
   publish:
     name: Publish pre-release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -201,7 +202,6 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ needs.build.outputs.tag }}
       VERSION: ${{ needs.build.outputs.version }}
-      APK: ${{ needs.build.outputs.apk }}
       APK_SHA256: ${{ needs.build.outputs.apk_sha256 }}
       BUILD_CONFIG: ${{ inputs.config }}
     steps:
@@ -212,8 +212,13 @@ jobs:
           name: apk
           path: dist
 
+      # The file name is derived here, not passed as a job output: it contains
+      # the key alias, and GitHub drops job outputs that contain a secret.
       - name: Check APK checksum
-        run: echo "$APK_SHA256  dist/$APK" | sha256sum --check
+        run: |
+          apk="apexguide-${VERSION}-${GITHUB_RUN_NUMBER}.apk"
+          echo "$APK_SHA256  dist/$apk" | sha256sum --check
+          echo "APK=$apk" >> "$GITHUB_ENV"
 
       - name: Create GitHub pre-release
         run: |

@@ -420,6 +420,12 @@ DST-001 produces the first signed Android and iPhone builds. WebMiller is an een
 - Every signed build needs the owner's approval in the `release` environment
 - The export-compliance answer for SQLite3 Multiple Ciphers is added here in DST-001-T6
 
+**Amendments (2026-10-10, DST-001-T4/T6, owner decisions):**
+- Item 6: upload with `xcrun altool --upload-package` and the App Store Connect API key; `--upload-app` is deprecated and fails with some Xcode 26 setups
+- Item 7: debug symbols are uploaded only encrypted (AES-256-CBC, PBKDF2) with the `ANDROID_SYMBOLS_PASSWORD` secret, because artifacts of a public repository can be downloaded by any GitHub user and the symbols undo the obfuscation
+- Item 10 (new), export compliance: `ITSAppUsesNonExemptEncryption` is `NO` while the app ships no encryption code of its own (DST-001 builds have no database encryption, secure storage or network client). SQLite3 Multiple Ciphers bundles its own AES and is likely non-exempt mass-market encryption; FND-004 revisits the answer before the first build that ships it. A wrong `NO` is a compliance issue, not only a review issue
+- Runners pinned (`ubuntu-24.04`, `macos-26` with a selected Xcode) and Android build-tools pinned to 36.0.0 for reproducible pilot builds
+
 ---
 
 ## Superseded/Deprecated Decisions

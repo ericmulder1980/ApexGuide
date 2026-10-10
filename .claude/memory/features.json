@@ -128,7 +128,8 @@
         "Key is generated on first launch and stored in Keystore/Keychain",
         "Schema covered by tests against an in-memory database",
         "Async bootstrap in main() for database and secure storage, injected as ProviderScope overrides (FND-001 review)",
-        "iOS: database and image directories excluded from backup (isExcludedFromBackup); Android backup and device transfer already disabled in FND-001"
+        "iOS: database and image directories excluded from backup (isExcludedFromBackup); Android backup and device transfer already disabled in FND-001",
+        "Export compliance revisited before the first build that ships SQLite3 Multiple Ciphers: research the classification (likely non-exempt mass-market encryption), set ITSAppUsesNonExemptEncryption in ios/Runner/Info.plist accordingly (NO since DST-001-T6) and record the outcome in DEC-015 (DST-001-T6)"
       ]
     },
     {
@@ -520,7 +521,7 @@
           { "id": "DST-001-T3", "title": "Android app signing key created by the owner; key.properties; GitHub environment release", "estimate": "S", "depends_on": ["DST-001-T1"], "status": "complete", "completed": "2026-10-10" },
           { "id": "DST-001-T4", "title": "android-release.yml: analyze, test, obfuscated signed APK, apksigner verify, GitHub pre-release", "estimate": "M", "depends_on": ["DST-001-T3"], "status": "complete", "completed": "2026-10-10", "note": "Run #3 (38051925449, 0b6cb6c): pre-release pilot-v1.0.0-3, APK independently verified (checksum, signature, package); owner installed it from the download link on an Android phone and it opens on the start screen" },
           { "id": "DST-001-T5", "title": "ios-build-check.yml: unsigned iOS release build on macos-26 with Xcode 26.3", "estimate": "M", "depends_on": ["DST-001-T1"], "status": "complete", "completed": "2026-10-10", "note": "Run 38040702732 on macos-26 with Xcode 26.3 and Flutter 3.38.10: analyze, test and unsigned release build passed (~5 min)" },
-          { "id": "DST-001-T6", "title": "iOS signing, export compliance, ios-testflight.yml upload to TestFlight", "estimate": "L", "depends_on": ["DST-001-T2", "DST-001-T5"], "status": "pending" },
+          { "id": "DST-001-T6", "title": "iOS signing, export compliance, ios-testflight.yml upload to TestFlight", "estimate": "L", "depends_on": ["DST-001-T2", "DST-001-T5"], "status": "in_progress", "note": "Apple setup A-G done by owner; ITSAppUsesNonExemptEncryption NO; Runner Release set to manual signing; ios-testflight.yml written and linted, needs a first run" },
           { "id": "DST-001-T7", "title": "Wrap-up: DEC-013/LICENSE wording, README and DEVELOPMENT.md release sections, resolve ISS-002, memory", "estimate": "S", "depends_on": ["DST-001-T4", "DST-001-T6"], "status": "pending" }
         ]
       }

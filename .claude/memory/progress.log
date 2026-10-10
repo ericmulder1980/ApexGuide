@@ -668,3 +668,46 @@ Feature: DST-001 - Task: DST-001-T4 - android-release.yml
   DST-001 remaining: T2 (Play identity verification pending, then package registration),
   T6 (iOS signing + TestFlight), T7 (wrap-up: spec/DEC-015 incl. encrypted symbols,
   ubuntu-24.04 and build-tools 36.0.0 pins, DEVELOPMENT.md alias/upload-key wording, ISS-002)
+
+================================================================================
+[2026-10-10] TASK PROGRESS
+Feature: DST-001 - Task: DST-001-T6 - iOS signing and TestFlight
+
+RESEARCH: altool --upload-app is deprecated (fails in some Xcode 26 setups) -> use
+  altool --upload-package with API key (DEC-015 update in T7). Export .p12 from Keychain
+  Access (OpenSSL 3 .p12 files often fail security import on runners). iOS 1024 icon has
+  no alpha. Export compliance: app ships no crypto today (no sqlite3mc/secure storage/
+  network yet); recommended ITSAppUsesNonExemptEncryption=NO now + FND-004 criterion to
+  revisit when SQLite3 Multiple Ciphers ships (likely non-exempt mass market). Owner
+  answer pending.
+
+OWNER DONE (A-E):
+- App ID nl.webmiller.apexguide registered, no capabilities
+- CSR (CN=Eric Mulder) -> Apple Distribution: Eric Mulder (Q5GMY36WUC), cert SHA-1
+  3FA1D3E0ACD657CA410D6075C35AFE92DF01A09D. Double-click import landed the cert in the
+  System keychain while the key was in login -> "My Certificates" empty. Fixed by importing
+  the .cer and Apple WWDR G3 (from apple.com) into login; identity now valid. Owner to
+  delete the System copy. Exported apexguide-distribution.p12
+- Profile "ApexGuide App Store" (App Store Connect distribution), UUID
+  19a5ba3f-e8be-44d3-a654-9c0675517938, expires 2027-10-10, beta-reports-active true,
+  get-task-allow false, contains the distribution cert
+- App Store Connect app record created; Apple ID 6821441474 (not secret)
+- ~/Keys/apexguide/* set to chmod 600
+
+OPEN: F (API key, Key ID, Issuer ID), G (five secrets), export-compliance answer; then
+  ios-testflight.yml
+================================================================================
+- [2026-10-10] T6: owner finished F (Team API key, App Manager role) and G
+  (secrets). OWNER DECISION: ITSAppUsesNonExemptEncryption = NO now (Info.plist); FND-004
+  criterion added to revisit before SQLite3 Multiple Ciphers ships; DEC-015 amended (upload
+  command, encrypted symbols, export compliance, runner/build-tools pins).
+  Runner Release config: manual signing, Apple Distribution, team Q5GMY36WUC, profile
+  "ApexGuide App Store" (Debug/Profile unchanged). ios-testflight.yml: secrets + Issuer ID
+  check, temp keychain with random password, profile check (name/app id), ExportOptions
+  generated (app-store-connect, manual), flutter build ipa --obfuscate, IPA checks (bundle
+  id, version, build = run number, encryption key false, Apple Distribution authority,
+  team, codesign --verify), altool --validate-app then --upload-package, cleanup always,
+  symbols encrypted with ANDROID_SYMBOLS_PASSWORD. Dry-run of export options and profile
+  check passed locally. Issuer ID 472098bd-b4b4-463c-bef5-ed37fea421ca set in the workflow (not secret).
+  TODO after commit: rerun iOS build check to confirm --no-codesign still works with
+  manual Release signing.

@@ -655,3 +655,16 @@ Feature: DST-001 - Task: DST-001-T4 - android-release.yml
   the checks; logs need auth). Unpinned build-tools resolved to 37.0.0 (untested). Fix:
   pin build-tools 36.0.0 (local + runner), explicit ::error per tool, grep -c || true.
   Dry-run passes on the signed release APK and rejects the debug APK. Root cause unconfirmed
+- [2026-10-10] T4 run #3 (38051925449, 0b6cb6c) SUCCESS. Pre-release pilot-v1.0.0-3,
+  asset apexguide-1.0.0-3.apk (SHA-256 87688c52...ffef5b). Downloaded from the public link
+  and verified independently: checksum matches release notes and GitHub digest; apksigner
+  verifies, 1 signer, CN=WebMiller, cert SHA-256 902b8e32...3f91, RSA 4096; package
+  nl.webmiller.apexguide, versionCode 3 (= run number), versionName 1.0.0, label ApexGuide,
+  targetSdk 36. Artifacts: encrypted symbols (expire 2027-01-08), apk (7 days).
+  Run #2 root cause stays unconfirmed (fixed by pinning build-tools 36.0.0).
+  Remaining for T4: owner installs the APK from the link on an Android phone.
+- [2026-10-10] T4 COMPLETE: owner installed apexguide-1.0.0-3.apk from the release link on
+  an Android phone; it opens on the ApexGuide start screen.
+  DST-001 remaining: T2 (Play identity verification pending, then package registration),
+  T6 (iOS signing + TestFlight), T7 (wrap-up: spec/DEC-015 incl. encrypted symbols,
+  ubuntu-24.04 and build-tools 36.0.0 pins, DEVELOPMENT.md alias/upload-key wording, ISS-002)
